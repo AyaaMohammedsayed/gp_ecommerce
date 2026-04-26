@@ -116,7 +116,7 @@ class HomeCubit extends Cubit<HomeState> {
   void selectCategory(String categoryName) {
     if (state is HomeLoaded) {
       final currentState = state as HomeLoaded;
-      emit(currentState.copyWith(selectedCategory: categoryName));
+      emit(currentState.copyWith(selectedCategory: categoryName, showAll: false));
     }
   }
 
@@ -137,6 +137,13 @@ class HomeCubit extends Cubit<HomeState> {
     if (state is HomeLoaded) {
       final currentState = state as HomeLoaded;
       emit(currentState.copyWith(searchQuery: query));
+    }
+  }
+
+  void toggleShowAll() {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      emit(currentState.copyWith(showAll: !currentState.showAll));
     }
   }
 }

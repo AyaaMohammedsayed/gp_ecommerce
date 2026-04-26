@@ -97,19 +97,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Popular ${state.selectedCategory}',
+                        state.showAll ? 'All Products' : 'Popular ${state.selectedCategory}',
                         style: Theme.of(context).textTheme.displayLarge?.copyWith(
                           fontSize: 18.sp,
                         ),
                       ),
                       GestureDetector(
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Showing all products...')),
-                          );
+                          context.read<HomeCubit>().toggleShowAll();
                         },
                         child: Text(
-                          'See all',
+                          state.showAll ? 'Show less' : 'See all',
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w500,
@@ -129,12 +127,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisSpacing: 16.h,
                     ),
                     itemCount: state.products.where((p) => 
-                      p.category == state.selectedCategory && 
+                      (state.showAll || p.category == state.selectedCategory) && 
                       p.name.toLowerCase().contains(state.searchQuery.toLowerCase())
                     ).length,
                     itemBuilder: (context, index) {
                       final filteredProducts = state.products.where((p) => 
-                        p.category == state.selectedCategory && 
+                        (state.showAll || p.category == state.selectedCategory) && 
                         p.name.toLowerCase().contains(state.searchQuery.toLowerCase())
                       ).toList();
                       final product = filteredProducts[index];
