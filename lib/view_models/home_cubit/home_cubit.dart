@@ -42,6 +42,41 @@ class HomeCubit extends Cubit<HomeState> {
           imageUrl: 'https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111', 
           category: 'Shoes'
         ),
+        const ProductModel(
+          id: '4', 
+          name: 'Nike Air Force', 
+          price: 150.0, 
+          imageUrl: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a', 
+          category: 'Shoes'
+        ),
+        const ProductModel(
+          id: '5', 
+          name: 'Reebok Classic', 
+          price: 85.0, 
+          imageUrl: 'https://images.unsplash.com/photo-1539185441755-769473a23570', 
+          category: 'Shoes'
+        ),
+        const ProductModel(
+          id: '6', 
+          name: 'Casual T-Shirt', 
+          price: 25.0, 
+          imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab', 
+          category: 'Clothes'
+        ),
+        const ProductModel(
+          id: '7', 
+          name: 'Leather Jacket', 
+          price: 200.0, 
+          imageUrl: 'https://images.unsplash.com/photo-1551028719-00167b16eac5', 
+          category: 'Clothes'
+        ),
+        const ProductModel(
+          id: '8', 
+          name: 'Denim Jeans', 
+          price: 60.0, 
+          imageUrl: 'https://images.unsplash.com/photo-1542272604-787c3835535d', 
+          category: 'Clothes'
+        ),
       ];
 
       emit(HomeLoaded(categories: categories, products: products, selectedCategory: 'Shoes'));

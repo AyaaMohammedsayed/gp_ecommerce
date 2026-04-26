@@ -99,11 +99,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 18.sp,
                         ),
                       ),
-                      Text(
-                        'See all',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w500,
+                      GestureDetector(
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Showing all products...')),
+                          );
+                        },
+                        child: Text(
+                          'See all',
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ],
