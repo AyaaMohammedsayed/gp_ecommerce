@@ -1,44 +1,36 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:gp_ecommerce/core/app_theme.dart';
-import 'package:gp_ecommerce/features/Auth/view/screens/screen.dart';
-import 'package:gp_ecommerce/features/Cart/view/screens/screen.dart';
-import 'package:gp_ecommerce/features/Categories/view/screens/screen.dart';
-import 'package:gp_ecommerce/features/Favorites/view/screens/screen.dart';
-import 'package:gp_ecommerce/features/Home/view/screens/screen.dart';
-import 'package:gp_ecommerce/features/Payment/view/screens/screen.dart';
-import 'package:gp_ecommerce/features/product_details/view/screens/screen.dart';
-import 'package:gp_ecommerce/features/profile/view/screens/screen.dart';
-import 'package:gp_ecommerce/features/splash_screen/splash_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'core/themes/app_theme.dart';
+import 'view_models/home_cubit/home_cubit.dart';
+import 'views/home/home_screen.dart';
 
 void main() {
-  runApp(EcommerceApp());
+  runApp(const MyApp());
 }
 
-class EcommerceApp extends StatelessWidget {
-  const EcommerceApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: {
-             SplashScreen.routeName: (_) => SplashScreen(),
-             AuthScreen.routeName: (_) => AuthScreen(),
-             CartScreen.routeName: (_) => CartScreen(),
-             CategoriesScreen.routeName: (_) => CategoriesScreen(),
-             FavoritesScreen.routeName: (_) => FavoritesScreen(),
-             HomeScreen.routeName: (_) => HomeScreen(),
-             PaymentScreen.routeName: (_) => PaymentScreen(),
-             ProductDetailsScreen.routeName: (_) => ProductDetailsScreen(),
-             ProfileScreen.routeName: (_) => ProfileScreen(),
-
+    return ScreenUtilInit(
+      designSize: const Size(375, 812), // Figma design standard size
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => HomeCubit()),
+          ],
+          child: MaterialApp(
+            title: 'E-Commerce App',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            home: const HomeScreen(),
+          ),
+        );
       },
-      initialRoute: SplashScreen.routeName,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
     );
   }
 }
