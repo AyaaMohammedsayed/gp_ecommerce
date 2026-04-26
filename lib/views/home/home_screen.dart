@@ -54,8 +54,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     child: TextField(
+                      onChanged: (value) {
+                        context.read<HomeCubit>().searchProducts(value);
+                      },
                       decoration: InputDecoration(
-                        hintText: 'Looking for shoes',
+                        hintText: 'Looking for products',
                         hintStyle: Theme.of(context).textTheme.bodyMedium,
                         border: InputBorder.none,
                         icon: Icon(Icons.search, color: AppColors.textLight, size: 24.w),
@@ -94,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Popular Shoes',
+                        'Popular ${state.selectedCategory}',
                         style: Theme.of(context).textTheme.displayLarge?.copyWith(
                           fontSize: 18.sp,
                         ),
@@ -125,9 +128,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisSpacing: 16.w,
                       mainAxisSpacing: 16.h,
                     ),
-                    itemCount: state.products.where((p) => p.category == state.selectedCategory).length,
+                    itemCount: state.products.where((p) => 
+                      p.category == state.selectedCategory && 
+                      p.name.toLowerCase().contains(state.searchQuery.toLowerCase())
+                    ).length,
                     itemBuilder: (context, index) {
-                      final filteredProducts = state.products.where((p) => p.category == state.selectedCategory).toList();
+                      final filteredProducts = state.products.where((p) => 
+                        p.category == state.selectedCategory && 
+                        p.name.toLowerCase().contains(state.searchQuery.toLowerCase())
+                      ).toList();
                       final product = filteredProducts[index];
                       return ProductCard(
                         product: product,

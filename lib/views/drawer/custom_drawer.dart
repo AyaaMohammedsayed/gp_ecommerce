@@ -90,37 +90,15 @@ class CustomDrawer extends StatelessWidget {
               ),
               SizedBox(height: 20.h),
               const Divider(color: Colors.black26, thickness: 2),
-              SizedBox(height: 40.h),
-              // Day/Night Graphic Placeholder
-              Container(
-                height: 200.h,
-                width: 200.w,
-                decoration: const BoxDecoration(
-                  color: Colors.black12,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.wb_sunny, color: Colors.blueAccent, size: 40.sp),
-                          SizedBox(width: 20.w),
-                          Icon(Icons.nightlight_round, color: Colors.blue, size: 40.sp),
-                        ],
-                      ),
-                      Container(
-                        height: 60.h,
-                        width: 2.w,
-                        color: Colors.white38,
-                        margin: EdgeInsets.only(bottom: 60.h),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              SizedBox(height: 10.h),
+              // Navigation Items
+              _buildDrawerItem(Icons.home_outlined, 'Home', context),
+              _buildDrawerItem(Icons.shopping_cart_outlined, 'My Cart', context),
+              _buildDrawerItem(Icons.favorite_outline, 'My Favorites', context),
+              _buildDrawerItem(Icons.notifications_none, 'Notifications', context),
+              _buildDrawerItem(Icons.settings_outlined, 'Settings', context),
+              _buildDrawerItem(Icons.help_outline, 'Help & Support', context),
+              
               const Spacer(),
               // Logout Button
               GestureDetector(
@@ -153,6 +131,23 @@ class CustomDrawer extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDrawerItem(IconData icon, String title, BuildContext context) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white70, size: 24.sp),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16.sp,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      onTap: () {
+        Navigator.pop(context);
+      },
     );
   }
 }

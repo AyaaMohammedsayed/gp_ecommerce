@@ -77,6 +77,34 @@ class HomeCubit extends Cubit<HomeState> {
           imageUrl: 'https://images.unsplash.com/photo-1542272604-787c3835535d', 
           category: 'Clothes'
         ),
+        const ProductModel(
+          id: '9', 
+          name: 'Winter Coat', 
+          price: 120.0, 
+          imageUrl: 'https://images.unsplash.com/photo-1539533113208-f6df8cc8b543', 
+          category: 'Clothes'
+        ),
+        const ProductModel(
+          id: '10', 
+          name: 'Smart Watch', 
+          price: 250.0, 
+          imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30', 
+          category: 'Accessories'
+        ),
+        const ProductModel(
+          id: '11', 
+          name: 'Sunglasses', 
+          price: 50.0, 
+          imageUrl: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f', 
+          category: 'Accessories'
+        ),
+        const ProductModel(
+          id: '12', 
+          name: 'Leather Wallet', 
+          price: 40.0, 
+          imageUrl: 'https://images.unsplash.com/photo-1627123424574-724758594e93', 
+          category: 'Accessories'
+        ),
       ];
 
       emit(HomeLoaded(categories: categories, products: products, selectedCategory: 'Shoes'));
@@ -102,6 +130,13 @@ class HomeCubit extends Cubit<HomeState> {
         return p;
       }).toList();
       emit(currentState.copyWith(products: updatedProducts));
+    }
+  }
+
+  void searchProducts(String query) {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      emit(currentState.copyWith(searchQuery: query));
     }
   }
 }
