@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../core/constants/app_colors.dart';
+import '../../../core/app_colors.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
