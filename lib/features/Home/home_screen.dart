@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../view_models/home_cubit/home_cubit.dart';
-import '../../core/constants/app_colors.dart';
-import '../drawer/custom_drawer.dart';
+import 'cubit/home_cubit.dart';
+import '../../core/app_colors.dart';
+import 'widgets/custom_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -296,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   vertical: 4.h,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.1),
+                                  color: Colors.white.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(4.r),
                                 ),
                                 child: Text(
@@ -426,7 +426,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.05),
+                                color: Colors.white.withValues(alpha: 0.05),
                                 width: 1,
                               ),
                             ),
@@ -437,14 +437,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: Colors.white.withOpacity(0.1),
+                                    color: Colors.white.withValues(alpha: 0.1),
                                     width: 1,
                                   ),
                                 ),
                                 child: Center(
                                   child: Icon(
                                     Icons.memory,
-                                    color: Colors.white.withOpacity(0.8),
+                                    color: Colors.white.withValues(alpha: 0.8),
                                     size: 48.w,
                                   ),
                                 ),
@@ -515,7 +515,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             height: 120.h,
             decoration: BoxDecoration(
-              color: AppColors.surfaceVariant.withOpacity(0.5),
+              color: AppColors.surfaceVariant.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(12.r),
             ),
           ),
@@ -524,7 +524,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 12.h,
             width: 80.w,
             decoration: BoxDecoration(
-              color: AppColors.surfaceVariant.withOpacity(0.5),
+              color: AppColors.surfaceVariant.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(6.r),
             ),
           ),
@@ -533,7 +533,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 12.h,
             width: 60.w,
             decoration: BoxDecoration(
-              color: AppColors.surfaceVariant.withOpacity(0.5),
+              color: AppColors.surfaceVariant.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(6.r),
             ),
           ),
@@ -546,7 +546,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant.withOpacity(0.5),
+        color: AppColors.surfaceVariant.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: AppColors.surfaceVariant),
       ),

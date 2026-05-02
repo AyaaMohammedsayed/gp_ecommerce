@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../../models/product_model.dart';
-import '../../models/category_model.dart';
+import '../models/product_model.dart';
+import '../models/category_model.dart';
 
 part 'home_state.dart';
 
