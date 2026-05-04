@@ -19,5 +19,6 @@ class AppColors {
   static const Color text2 = Color(0xFFDAE2FD); // text color 2 (ex: Your Gallery)
   static const Color text3 = Color(0xFF8D90A2); //subtext color (ex: objects selected)
   static const Color titleColor = Color(0xFFC3C5D9); // subtext color 2 (item headings)
+  static const Color cardColor = Color(0xFF151b2d);
 
 }
