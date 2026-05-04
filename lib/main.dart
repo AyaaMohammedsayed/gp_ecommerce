@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
             title: 'E-Commerce App',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
-            home: const CartScreen(),
+            home: const HomeScreen(),
           ),
         );
       },
