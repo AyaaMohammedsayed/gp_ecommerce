@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'cubit/home_cubit.dart';
-import '../../core/app_colors.dart';
-import 'widgets/custom_drawer.dart';
+import '../../view_model/home_cubit.dart';
+import '../../../../core/app_colors.dart';
+import '../widgets/custom_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
