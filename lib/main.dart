@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gp_ecommerce/features/Home/view/screens/home_screen.dart';
+import 'package:gp_ecommerce/features/Home/view_model/home_cubit.dart';
 import 'core/app_theme.dart';
 import 'features/onboarding_screen/onboarding_screen.dart';
 import 'features/splash_screen/splash_screen.dart';
