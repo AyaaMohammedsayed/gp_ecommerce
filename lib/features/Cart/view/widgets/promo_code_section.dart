@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gp_ecommerce/core/app_colors.dart';
+import 'package:gp_ecommerce/core/constants/app_colors.dart';
 
 class PromoCodeSection extends StatefulWidget {
   final Function(String code)? onApply;

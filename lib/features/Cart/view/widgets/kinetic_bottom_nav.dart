@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gp_ecommerce/core/app_colors.dart';
+import 'package:gp_ecommerce/core/constants/app_colors.dart';
 
 class KineticBottomNav extends StatelessWidget {
   final int currentIndex;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gp_ecommerce/core/app_colors.dart';
+import 'package:gp_ecommerce/core/constants/app_colors.dart';
 import 'package:gp_ecommerce/features/Cart/view/widgets/kinetic_bottom_nav.dart';
 import 'package:gp_ecommerce/features/Cart/view/widgets/order_summary_card.dart';
 import 'package:gp_ecommerce/features/Cart/view/widgets/product_card.dart';
