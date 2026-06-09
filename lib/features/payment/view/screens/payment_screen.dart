@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gp_ecommerce/core/app_colors.dart';
+import 'package:gp_ecommerce/core/constants/app_colors.dart';
 
 // Mock order item (to be replaced)
 class _OrderItem {

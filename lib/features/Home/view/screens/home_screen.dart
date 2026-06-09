@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../view_model/home_cubit.dart';
-import '../../../../core/app_colors.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../widgets/custom_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
+    static const routeName = '/home';
   const HomeScreen({super.key});
 
   @override
@@ -57,6 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(width: 8.w),
         ],
       ),
+      
+      
       drawer: const CustomDrawer(),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {

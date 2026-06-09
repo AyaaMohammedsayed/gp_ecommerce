@@ -9,7 +9,7 @@ class AppTheme {
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.background,
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.surfaceVariant,
         elevation: 0,
         iconTheme: IconThemeData(color: AppColors.textDark),
         centerTitle: true,
