@@ -14,6 +14,8 @@ class AppColors {
   static const Color drawerBackground = Color(0xFF0F172A);
   static const Color drawerCard = Color(0xFF1E293B);
   static const Color logoutRed = Color(0xFFB00020);
+  static const Color logo = Color(0xFFB9C7FF);
+}
 
   // Dark Mode
   static const Color darkbackground = Color(0xFF0d1325);
