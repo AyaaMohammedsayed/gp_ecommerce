@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppTheme {
-  static ThemeData get lightTheme {
+  static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,
       primaryColor: AppColors.primary,
@@ -13,11 +12,6 @@ class AppTheme {
         elevation: 0,
         iconTheme: IconThemeData(color: AppColors.textDark),
         centerTitle: true,
-      ),
-      textTheme: GoogleFonts.poppinsTextTheme().copyWith(
-        displayLarge: GoogleFonts.poppins(color: AppColors.textDark, fontWeight: FontWeight.bold),
-        bodyLarge: GoogleFonts.poppins(color: AppColors.textDark),
-        bodyMedium: GoogleFonts.poppins(color: AppColors.textLight),
       ),
       colorScheme: ColorScheme.fromSwatch(brightness: Brightness.dark).copyWith(
         primary: AppColors.primary,

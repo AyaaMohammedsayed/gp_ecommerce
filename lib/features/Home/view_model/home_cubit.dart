@@ -2,66 +2,103 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../data/models/product_model.dart';
 import '../data/models/category_model.dart';
+import '../data/home_service.dart';
+import '../../../core/api_client.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit() : super(HomeInitial());
+  HomeCubit({HomeService? homeService})
+    : _homeService = homeService ?? HomeService(),
+      super(HomeInitial());
+
+  final HomeService _homeService;
 
   void loadHomeData() async {
     emit(HomeLoading());
     try {
-      // Simulating API call
-      await Future.delayed(const Duration(seconds: 1));
-      
-      final categories = [
-        const CategoryModel(id: '1', name: 'Watch', iconAsset: 'watch'),
-        const CategoryModel(id: '2', name: 'Phone', iconAsset: 'phone'),
-        const CategoryModel(id: '3', name: 'Audio', iconAsset: 'audio'),
-      ];
+      // Fetch categories and products from the backend in parallel
+      final results = await Future.wait([
+        _homeService.getCategories(),
+        _homeService.getProducts(page: 1),
+      ]);
 
-      final products = [
-        const ProductModel(
-          id: '1', 
-          name: 'PRO-LAB 14"', 
-          price: 1399.00, 
-          imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853', 
-          category: 'Phone' 
-        ),
-        const ProductModel(
-          id: '2', 
-          name: 'XAMOX V1', 
-          price: 450.0, 
-          imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30', 
-          category: 'Watch'
-        ),
-        const ProductModel(
-          id: '3', 
-          name: 'HEX 16', 
-          price: 899.0, 
-          imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9', 
-          category: 'Phone'
-        ),
-      ];
+      final categories = results[0] as List<CategoryModel>;
+      final products = results[1] as List<ProductModel>;
 
-      emit(HomeLoaded(categories: categories, products: products, selectedCategory: 'Watch'));
+      emit(
+        HomeLoaded(
+          categories: categories,
+          products: products,
+          selectedCategory: '',
+        ),
+      );
+    } on ApiException catch (e) {
+      emit(HomeError(message: 'Server error: ${e.message}'));
     } catch (e) {
-      emit(HomeError(message: e.toString()));
+      emit(
+        HomeError(
+          message: 'Failed to load data. Please check your connection.',
+        ),
+      );
     }
   }
 
   void selectCategory(String categoryName) {
     if (state is HomeLoaded) {
       final currentState = state as HomeLoaded;
-      emit(currentState.copyWith(selectedCategory: categoryName, showAll: false));
+
+      // Find the category by name to get its ID
+      final category = currentState.categories.firstWhere(
+        (c) => c.name == categoryName,
+        orElse: () =>
+            const CategoryModel(id: -1, name: '', slug: '', coverImage: ''),
+      );
+
+      emit(currentState.copyWith(selectedCategory: categoryName));
+
+      // Load products filtered by this category from the API
+      if (category.id != -1) {
+        _loadCategoryProducts(category.id, currentState);
+      }
+    }
+  }
+
+  void _loadCategoryProducts(int categoryId, HomeLoaded currentState) async {
+    try {
+      final products = await _homeService.getProductsByCategory(categoryId);
+      // Only update if still on the same state
+      if (state is HomeLoaded) {
+        emit((state as HomeLoaded).copyWith(products: products));
+      }
+    } catch (_) {
+      // Silently fail — keep showing existing products
+    }
+  }
+
+  void loadAllProducts() async {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      emit(currentState.copyWith(selectedCategory: ''));
+      try {
+        final products = await _homeService.getProducts(page: 1);
+        if (state is HomeLoaded) {
+          emit((state as HomeLoaded).copyWith(products: products));
+        }
+      } catch (_) {
+        // Keep existing products
+      }
     }
   }
 
   void toggleFavorite(String productId) {
     if (state is HomeLoaded) {
       final currentState = state as HomeLoaded;
+      final id = int.tryParse(productId);
+      if (id == null) return;
+
       final updatedProducts = currentState.products.map((p) {
-        if (p.id == productId) {
+        if (p.id == id) {
           return p.copyWith(isFavorite: !p.isFavorite);
         }
         return p;

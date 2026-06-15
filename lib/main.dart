@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gp_ecommerce/features/Cart/view/screens/cart_screen.dart';
 import 'package:gp_ecommerce/features/Categories/view/screens/category_detials_screen.dart';
 import 'package:gp_ecommerce/features/Categories/view/screens/category_screen.dart';
@@ -13,8 +14,10 @@ import 'features/Auth/view/screens/forgot_password_screen.dart';
 import 'features/Auth/view/screens/register_screen.dart';
 import 'features/onboarding_screen/onboarding_screen.dart';
 import 'features/splash_screen/splash_screen.dart';
+import 'features/Home/view_model/home_cubit.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -28,26 +31,29 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MaterialApp(
-          title: 'E-Commerce App',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          initialRoute: CategoriesScreen.routeName,
-          routes: {
-            SplashScreen.routeName: (context) => const SplashScreen(),
-            OnboardingScreen.routeName: (context) => const OnboardingScreen(),
-            AuthScreen.routeName: (context) => const AuthScreen(),
-            RegisterScreen.routeName: (context) => const RegisterScreen(),
-            CartScreen.routeName: (context) => const CartScreen(),
-            ForgotPasswordScreen.routeName: (context) =>
-                const ForgotPasswordScreen(),
-            HomeScreen.routeName: (context) => const HomeScreen(),
-            PaymentScreen.routeName: (context) => const PaymentScreen(),
-            CategoriesScreen.routeName: (context) => const CategoriesScreen(),
-            ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
-            CategoryDetialsScreen.routeName: (context) =>
-                CategoryDetialsScreen(),
-          },
+        return MultiBlocProvider(
+          providers: [BlocProvider(create: (context) => HomeCubit())],
+          child: MaterialApp(
+            title: 'Kinetic - Electronics Store',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.darkTheme,
+            home: const HomeScreen(),
+            routes: {
+              SplashScreen.routeName: (context) => const SplashScreen(),
+              OnboardingScreen.routeName: (context) => const OnboardingScreen(),
+              AuthScreen.routeName: (context) => const AuthScreen(),
+              RegisterScreen.routeName: (context) => const RegisterScreen(),
+              CartScreen.routeName: (context) => const CartScreen(),
+              ForgotPasswordScreen.routeName: (context) =>
+                  const ForgotPasswordScreen(),
+              HomeScreen.routeName: (context) => const HomeScreen(),
+              PaymentScreen.routeName: (context) => const PaymentScreen(),
+              CategoriesScreen.routeName: (context) => const CategoriesScreen(),
+              ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
+              CategoryDetialsScreen.routeName: (context) =>
+                  CategoryDetialsScreen(),
+            },
+          ),
         );
       },
     );
