@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gp_ecommerce/features/Auth/view_model/cubit.dart';
+import 'features/onboarding_screen/onboarding_screen.dart';
+import 'features/splash_screen/splash_screen.dart';
 import 'package:gp_ecommerce/features/Cart/view/screens/cart_screen.dart';
 import 'package:gp_ecommerce/features/Categories/view/screens/category_detials_screen.dart';
 import 'package:gp_ecommerce/features/Categories/view/screens/category_screen.dart';
 import 'package:gp_ecommerce/features/Home/view/screens/home_screen.dart';
 import 'package:gp_ecommerce/features/payment/view/screens/payment_screen.dart';
 import 'package:gp_ecommerce/features/product_details/view/screens/product_details.dart';
-
 import 'core/constants/app_theme.dart';
 import 'features/Auth/view/screens/auth_screen.dart';
 import 'features/Auth/view/screens/forgot_password_screen.dart';
 import 'features/Auth/view/screens/register_screen.dart';
-import 'features/onboarding_screen/onboarding_screen.dart';
-import 'features/splash_screen/splash_screen.dart';
+import 'core/constants/dio_helper.dart';
 import 'features/Home/view_model/home_cubit.dart';
 
 void main() {
+  DioHelper.init();
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }

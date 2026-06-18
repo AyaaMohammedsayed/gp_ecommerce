@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class AuthField extends StatelessWidget {
+  final TextEditingController? controller;
   final String hint;
   final IconData icon;
   final IconData? suffixIcon;
   final bool obscureText;
 
   const AuthField({
+    super.key,
+    this.controller,
     required this.hint,
     required this.icon,
     this.suffixIcon,
@@ -19,6 +22,7 @@ class AuthField extends StatelessWidget {
     return SizedBox(
       height: 43,
       child: TextField(
+        controller: controller,
         obscureText: obscureText,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: AppColors.white,
