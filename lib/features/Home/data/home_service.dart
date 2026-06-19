@@ -1,5 +1,5 @@
 import '../../../core/api_client.dart';
-import '../../../core/api_constants.dart';
+import '../../../core/constants/api_constants.dart';
 import 'models/category_model.dart';
 import 'models/product_model.dart';
 
@@ -41,8 +41,10 @@ class HomeService {
   }
 
   /// Fetches products belonging to a specific category.
-  Future<List<ProductModel>> getProductsByCategory(int categoryId,
-      {int page = 1}) async {
+  Future<List<ProductModel>> getProductsByCategory(
+    int categoryId, {
+    int page = 1,
+  }) async {
     final response = await _client.get(
       ApiConstants.categoryProducts(categoryId),
       queryParams: {'page': page.toString()},
@@ -51,5 +53,10 @@ class HomeService {
     return data
         .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
         .toList();
+  }
+
+  /// Toggles favorite status for a product.
+  Future<void> toggleFavorite(int productId) async {
+    await _client.post(ApiConstants.toggleFavorite(productId));
   }
 }

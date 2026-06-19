@@ -35,26 +35,35 @@ void didChangeDependencies() {
       ModalRoute.of(context)!.settings.arguments as int;
 
   WidgetsBinding.instance.addPostFrameCallback((_) async {
-    final token = await AuthLocalStorage.getToken();
+    final token = AuthLocalStorage().getToken();
 
-    if (token != null && token.isNotEmpty) {
-      context.read<ProductsCubit>().getProductDetails(
-            token,
-           productId
-          );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("No token found"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+    if (!mounted) return;
+    context.read<ProductsCubit>().getProductDetails(token, productId);
   });
 }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.keyboard_backspace_sharp,
+            color: Colors.white,
+            size: 32,
+          ),
+        ),
+        title: const Text(
+          'Product Details',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: BlocConsumer<ProductsCubit, ProductsState>(
         listener: (context, state) {
           if (state is GetProductDetailsError) {
@@ -133,17 +142,6 @@ void didChangeDependencies() {
                                 );
                               },
                             ),
-                    ),
-
-                    SafeArea(
-                      child: IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(
-                          Icons.keyboard_backspace_sharp,
-                          color: Colors.white,
-                          size: 32,
-                        ),
-                      ),
                     ),
 
                     if (safeImages.length > 1)

@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gp_ecommerce/core/auth_local_storage.dart';
 
 import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/features/Categories/data/models/models.dart';
+import '../../../Home/data/models/product_model.dart';
 import 'package:gp_ecommerce/features/Categories/view/widgets/product_item.dart';
 import 'package:gp_ecommerce/features/Categories/view_model/category_cubit.dart';
 import 'package:gp_ecommerce/features/Categories/view_model/category_states.dart';
@@ -16,49 +16,36 @@ class CategoryDetialsScreen extends StatefulWidget {
   const CategoryDetialsScreen({super.key});
 
   @override
-  State<CategoryDetialsScreen> createState() =>
-      _CategoryDetialsScreenState();
+  State<CategoryDetialsScreen> createState() => _CategoryDetialsScreenState();
 }
 
-class _CategoryDetialsScreenState
-    extends State<CategoryDetialsScreen> {
+class _CategoryDetialsScreenState extends State<CategoryDetialsScreen> {
   late int categoryId;
   late String categoryName;
 
   bool _isInit = false;
 
-@override
-void didChangeDependencies() {
-  super.didChangeDependencies();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-  if (_isInit) return;
-  _isInit = true;
+    if (_isInit) return;
+    _isInit = true;
 
-  final args = ModalRoute.of(context)!.settings.arguments
-      as Map<String, dynamic>;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
-  categoryId = args['id'];
-  categoryName = args['name'];
+    categoryId = args['id'];
+    categoryName = args['name'];
 
-  WidgetsBinding.instance.addPostFrameCallback((_) async {
-    final token = await AuthLocalStorage.getToken();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final token = AuthLocalStorage().getToken();
 
-    if (!mounted) return;
+      if (!mounted) return;
+      context.read<CategoriesCubit>().getCategoryProducts(token, categoryId);
+    });
+  }
 
-    if (token != null && token.isNotEmpty) {
-      context
-          .read<CategoriesCubit>()
-          .getCategoryProducts(token, categoryId);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("No token found"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  });
-}
   void _showSnackBar(String msg, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -72,6 +59,7 @@ void didChangeDependencies() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
           categoryName,
@@ -84,15 +72,11 @@ void didChangeDependencies() {
         centerTitle: false,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(
-            Icons.keyboard_backspace_sharp,
-            size: 32,
-          ),
+          icon: const Icon(Icons.keyboard_backspace_sharp, size: 32),
         ),
       ),
       body: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
         child: BlocConsumer<CategoriesCubit, CategoriesState>(
           listener: (context, state) {
             if (state is GetCategoryProductsError) {
@@ -100,27 +84,19 @@ void didChangeDependencies() {
             }
 
             if (state is GetCategoryProductsSuccess) {
-              _showSnackBar(
-                "Products loaded successfully",
-                Colors.green,
-              );
+              _showSnackBar("Products loaded successfully", Colors.green);
             }
           },
           builder: (context, state) {
             final cubit = context.read<CategoriesCubit>();
 
-            final products =
-                cubit.categoryProductsResponse?.data ?? [];
+            final products = cubit.categoryProductsResponse?.data ?? [];
 
-            if (state is GetCategoryProductsLoading &&
-                products.isEmpty) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+            if (state is GetCategoryProductsLoading && products.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
             }
 
-            if (products.isEmpty &&
-                state is GetCategoryProductsSuccess) {
+            if (products.isEmpty && state is GetCategoryProductsSuccess) {
               return const Center(
                 child: Text(
                   "No products found",
@@ -134,10 +110,7 @@ void didChangeDependencies() {
               children: [
                 Text(
                   'Measure everything',
-                  style: TextStyle(
-                    fontSize: 10.sp,
-                    color: AppColors.white,
-                  ),
+                  style: TextStyle(fontSize: 10.sp, color: AppColors.white),
                 ),
                 SizedBox(height: 7.h),
                 Text(
@@ -154,15 +127,14 @@ void didChangeDependencies() {
                     padding: const EdgeInsets.all(8),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 0.4,
-                    ),
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: 0.4,
+                        ),
                     itemCount: products.length,
                     itemBuilder: (context, index) {
-                      final ProductModel product =
-                          products[index];
+                      final ProductModel product = products[index];
 
                       return InkWell(
                         onTap: () {

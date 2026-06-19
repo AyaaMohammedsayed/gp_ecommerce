@@ -6,7 +6,7 @@ import 'package:gp_ecommerce/features/Cart/view/widgets/product_card.dart';
 import 'package:gp_ecommerce/features/Cart/view/widgets/promo_code_section.dart';
 import 'package:gp_ecommerce/features/payment/view/screens/payment_screen.dart';
 
-// Temporary mock data (replace with bloc/state later) 
+// Temporary mock data (replace with bloc/state later)
 const _mockItems = [
   _CartItemData(
     name: 'Titanium X1 Pro',
@@ -136,7 +136,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
           const SizedBox(height: 28),
 
-          // Order Summary 
+          // Order Summary
           OrderSummaryCard(
             subtotal: subtotal,
             tax: tax,
@@ -152,9 +152,9 @@ class _CartScreenState extends State<CartScreen> {
           // Promo Code
           PromoCodeSection(
             onApply: (code) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Code "$code" applied!')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Code "$code" applied!')));
             },
           ),
           const SizedBox(height: 32),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'token_storage.dart';
+import 'auth_local_storage.dart';
+import 'constants/api_constants.dart';
 
 /// Centralized HTTP client with automatic auth header injection and error handling.
 class ApiClient {
@@ -15,7 +16,7 @@ class ApiClient {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     };
-    final token = TokenStorage().getToken();
+    final token = AuthLocalStorage().getToken();
     if (token != null) {
       headers['Authorization'] = 'Bearer $token';
     }
@@ -24,9 +25,7 @@ class ApiClient {
 
   /// Performs a GET request and returns the decoded JSON body.
   Future<dynamic> get(String url, {Map<String, String>? queryParams}) async {
-    final uri = queryParams != null
-        ? Uri.parse(url).replace(queryParameters: queryParams)
-        : Uri.parse(url);
+    final uri = _buildUri(url, queryParams: queryParams);
 
     final response = await _client.get(uri, headers: _headers);
     return _handleResponse(response);
@@ -35,7 +34,7 @@ class ApiClient {
   /// Performs a POST request with a JSON body.
   Future<dynamic> post(String url, {Map<String, dynamic>? body}) async {
     final response = await _client.post(
-      Uri.parse(url),
+      _buildUri(url),
       headers: _headers,
       body: body != null ? jsonEncode(body) : null,
     );
@@ -45,7 +44,7 @@ class ApiClient {
   /// Performs a PUT request with a JSON body.
   Future<dynamic> put(String url, {Map<String, dynamic>? body}) async {
     final response = await _client.put(
-      Uri.parse(url),
+      _buildUri(url),
       headers: _headers,
       body: body != null ? jsonEncode(body) : null,
     );
@@ -54,11 +53,18 @@ class ApiClient {
 
   /// Performs a DELETE request.
   Future<dynamic> delete(String url) async {
-    final response = await _client.delete(
-      Uri.parse(url),
-      headers: _headers,
-    );
+    final response = await _client.delete(_buildUri(url), headers: _headers);
     return _handleResponse(response);
+  }
+
+  Uri _buildUri(String url, {Map<String, String>? queryParams}) {
+    final normalizedUrl = url.startsWith('http')
+        ? url
+        : '${ApiConstants.baseUrl}$url';
+    final uri = Uri.parse(normalizedUrl);
+    return queryParams != null
+        ? uri.replace(queryParameters: queryParams)
+        : uri;
   }
 
   dynamic _handleResponse(http.Response response) {

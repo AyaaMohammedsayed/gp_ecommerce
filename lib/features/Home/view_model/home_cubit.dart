@@ -2,40 +2,48 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../data/models/product_model.dart';
 import '../data/models/category_model.dart';
-import '../data/home_service.dart';
-import '../../../core/api_client.dart';
+import '../data/api_service/api_service.dart';
+import '../../../../core/auth_local_storage.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit({HomeService? homeService})
-    : _homeService = homeService ?? HomeService(),
+  HomeCubit({HomeApiService? apiService})
+    : _apiService = apiService ?? HomeApiService(),
       super(HomeInitial());
 
-  final HomeService _homeService;
+  final HomeApiService _apiService;
 
   void loadHomeData() async {
     emit(HomeLoading());
     try {
-      // Fetch categories and products from the backend in parallel
+      final token = AuthLocalStorage().getToken();
       final results = await Future.wait([
-        _homeService.getCategories(),
-        _homeService.getProducts(page: 1),
+        _apiService.getCategories(token).catchError((_) => <CategoryModel>[]),
+        _apiService.getProducts(token, page: 1).catchError((_) => <ProductModel>[]),
+        _apiService.getOffers(token, page: 1).catchError((_) => <ProductModel>[]),
       ]);
 
       final categories = results[0] as List<CategoryModel>;
       final products = results[1] as List<ProductModel>;
+      final offers = results[2] as List<ProductModel>;
 
+      if (isClosed) return;
+      if (categories.isEmpty && products.isEmpty && offers.isEmpty) {
+        emit(HomeError(message: 'Failed to load data. Please check your connection.'));
+        return;
+      }
+      
       emit(
         HomeLoaded(
           categories: categories,
           products: products,
+          offers: offers,
           selectedCategory: '',
         ),
       );
-    } on ApiException catch (e) {
-      emit(HomeError(message: 'Server error: ${e.message}'));
     } catch (e) {
+      if (isClosed) return;
       emit(
         HomeError(
           message: 'Failed to load data. Please check your connection.',
@@ -44,11 +52,14 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  Future<void> refreshHomeData() async {
+    loadHomeData();
+  }
+
   void selectCategory(String categoryName) {
     if (state is HomeLoaded) {
       final currentState = state as HomeLoaded;
 
-      // Find the category by name to get its ID
       final category = currentState.categories.firstWhere(
         (c) => c.name == categoryName,
         orElse: () =>
@@ -57,23 +68,21 @@ class HomeCubit extends Cubit<HomeState> {
 
       emit(currentState.copyWith(selectedCategory: categoryName));
 
-      // Load products filtered by this category from the API
       if (category.id != -1) {
-        _loadCategoryProducts(category.id, currentState);
+        _loadCategoryProducts(category.id);
       }
     }
   }
 
-  void _loadCategoryProducts(int categoryId, HomeLoaded currentState) async {
+  void _loadCategoryProducts(int categoryId) async {
     try {
-      final products = await _homeService.getProductsByCategory(categoryId);
-      // Only update if still on the same state
+      final token = AuthLocalStorage().getToken();
+      final products = await _apiService.getProductsByCategory(token, categoryId);
+      if (isClosed) return;
       if (state is HomeLoaded) {
         emit((state as HomeLoaded).copyWith(products: products));
       }
-    } catch (_) {
-      // Silently fail — keep showing existing products
-    }
+    } catch (_) {}
   }
 
   void loadAllProducts() async {
@@ -81,13 +90,13 @@ class HomeCubit extends Cubit<HomeState> {
       final currentState = state as HomeLoaded;
       emit(currentState.copyWith(selectedCategory: ''));
       try {
-        final products = await _homeService.getProducts(page: 1);
+        final token = AuthLocalStorage().getToken();
+        final products = await _apiService.getProducts(token, page: 1);
+        if (isClosed) return;
         if (state is HomeLoaded) {
           emit((state as HomeLoaded).copyWith(products: products));
         }
-      } catch (_) {
-        // Keep existing products
-      }
+      } catch (_) {}
     }
   }
 
@@ -104,6 +113,9 @@ class HomeCubit extends Cubit<HomeState> {
         return p;
       }).toList();
       emit(currentState.copyWith(products: updatedProducts));
+
+      final token = AuthLocalStorage().getToken();
+      _apiService.toggleFavorite(token, id).catchError((_) {});
     }
   }
 

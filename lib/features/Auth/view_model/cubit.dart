@@ -1,36 +1,28 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../data/data.dart';
 import 'states.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/auth_local_storage.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
 
   final AuthData authData = AuthData();
 
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> login({required String email, required String password}) async {
     emit(AuthLoginLoading());
 
     try {
-      final result = await authData.login(
-        email: email,
-        password: password,
+      final result = await authData.login(email: email, password: password);
+      await AuthLocalStorage.setSession(
+        result.token,
+        result.user.name,
+        result.user.email,
+        userId: result.user.id.toString(),
       );
-
-      final prefs = await SharedPreferences.getInstance();
-
-      await prefs.setString('token', result.token);
-      await prefs.setString('userName', result.user.name);
-      await prefs.setString('userEmail', result.user.email);
-
-      print('Saved token: ${prefs.getString('token')}');
 
       emit(AuthLoginSuccess(result.msg));
     } catch (e) {
-        emit(AuthLoginError('Invalid email or password'));
+      emit(AuthLoginError('Invalid email or password'));
     }
   }
 

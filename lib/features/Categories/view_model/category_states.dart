@@ -1,4 +1,5 @@
-import 'package:gp_ecommerce/features/Categories/data/models/models.dart';
+import '../../Home/data/models/category_model.dart';
+import '../../Home/data/models/response_models.dart';
 
 abstract class CategoriesState {}
 

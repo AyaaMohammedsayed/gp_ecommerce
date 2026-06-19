@@ -1,25 +1,30 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'package:gp_ecommerce/core/api_constants.dart';
-import 'package:gp_ecommerce/features/Categories/data/models/models.dart';
+import '../../../core/constants/api_constants.dart';
+import '../../Home/data/models/response_models.dart';
+import '../../Home/data/models/product_details_model.dart';
 
 class ProductsApiService {
   final http.Client _client;
 
-  ProductsApiService({http.Client? client})
-      : _client = client ?? http.Client();
+  ProductsApiService({http.Client? client}) : _client = client ?? http.Client();
 
-  Map<String, String> _headers(String token) {
-    return {
+  Map<String, String> _headers(String? token) {
+    final headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
     };
+
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+
+    return headers;
   }
 
-  Future<ProductsResponseModel> getProducts(String token) async {
-    final uri = Uri.parse('${ApiConstants.baseUrl}/products');
+  Future<ProductsResponseModel> getProducts(String? token) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.products}');
 
     try {
       final response = await _client
@@ -40,9 +45,8 @@ class ProductsApiService {
     }
   }
 
-  Future<ProductsResponseModel> getOffers(String token) async {
-    final uri =
-        Uri.parse('${ApiConstants.baseUrl}/products/offers');
+  Future<ProductsResponseModel> getOffers(String? token) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.productOffers}');
 
     try {
       final response = await _client
@@ -64,11 +68,12 @@ class ProductsApiService {
   }
 
   Future<ProductDetailsModel> getProductDetails(
-    String token,
+    String? token,
     int productId,
   ) async {
-    final uri =
-        Uri.parse('${ApiConstants.baseUrl}/products/$productId');
+    final uri = Uri.parse(
+      '${ApiConstants.baseUrl}${ApiConstants.productDetails(productId)}',
+    );
 
     try {
       final response = await _client

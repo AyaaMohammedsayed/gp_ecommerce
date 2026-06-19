@@ -5,16 +5,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../view_model/home_cubit.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/token_storage.dart';
+import '../../../../core/auth_local_storage.dart';
 import '../widgets/custom_drawer.dart';
-import '../../../Cart/view/screens/cart_screen.dart';
 import '../../../Categories/view/screens/category_screen.dart';
 import '../../../Favorites/view/screens/screen.dart';
 import '../../../profile/view/screens/screen.dart';
+import '../../../profile/view_model/cubit.dart';
 import '../../../Auth/view/screens/auth_screen.dart';
+import '../../../product_details/view/screens/product_details.dart';
+import '../../../../core/widgets/appbar.dart';
 
 class HomeScreen extends StatefulWidget {
-    static const routeName = '/home';
+  static const routeName = '/home';
   const HomeScreen({super.key});
 
   @override
@@ -34,7 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      drawer: const CustomDrawer(),
+      drawer: CustomDrawer(onTabSelected: _selectTab),
+      appBar: appBar(),
       body: IndexedStack(
         index: _currentIndex,
         children: [
@@ -48,12 +51,19 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _selectTab(int index) {
+    if (index == 3) {
+      context.read<ProfileCubit>().checkLoginStatus();
+    }
+
+    setState(() => _currentIndex = index);
+  }
+
   // ─── HOME TAB ───────────────────────────────────────────────
   Widget _buildHomeTab() {
     return SafeArea(
       child: Column(
         children: [
-          _buildAppBar(),
           Expanded(
             child: BlocBuilder<HomeCubit, HomeState>(
               builder: (context, state) {
@@ -69,44 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 return const SizedBox.shrink();
               },
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ─── APP BAR ────────────────────────────────────────────────
-  Widget _buildAppBar() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-      child: Row(
-        children: [
-          // Menu
-          Builder(
-            builder: (ctx) => GestureDetector(
-              onTap: () => Scaffold.of(ctx).openDrawer(),
-              child: Icon(Icons.menu, color: Colors.white, size: 24.w),
-            ),
-          ),
-          const Spacer(),
-          // Logo
-          Text(
-            'KINETIC',
-            style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 18.sp,
-              letterSpacing: 2,
-            ),
-          ),
-          const Spacer(),
-          // Cart
-          GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const CartScreen()),
-            ),
-            child: Icon(Icons.shopping_cart_outlined, color: Colors.white, size: 24.w),
           ),
         ],
       ),
@@ -213,7 +185,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // ─── SECTION HEADER ─────────────────────────────────────────
-  Widget _buildSectionHeader(String title, {String? trailing, VoidCallback? onTrailingTap}) {
+  Widget _buildSectionHeader(
+    String title, {
+    String? trailing,
+    VoidCallback? onTrailingTap,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -264,10 +240,15 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               width: 88.w,
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.surfaceVariant : AppColors.surface,
+                color: isSelected
+                    ? AppColors.surfaceVariant
+                    : AppColors.surface,
                 borderRadius: BorderRadius.circular(16.r),
                 border: isSelected
-                    ? Border.all(color: AppColors.primary.withValues(alpha: 0.6), width: 1.5)
+                    ? Border.all(
+                        color: AppColors.primary.withValues(alpha: 0.6),
+                        width: 1.5,
+                      )
                     : null,
               ),
               child: Column(
@@ -290,6 +271,114 @@ class _HomeScreenState extends State<HomeScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // ─── TRENDING COMPONENTS ROW ────────────────────────────────
+  Widget _buildTrendingComponents(HomeLoaded state) {
+    if (state.products.isEmpty) return const SizedBox.shrink();
+    return SizedBox(
+      height: 240.h,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: state.products.length > 5 ? 5 : state.products.length,
+        separatorBuilder: (_, __) => SizedBox(width: 16.w),
+        itemBuilder: (context, index) {
+          final product = state.products[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                ProductDetailsScreen.routeName,
+                arguments: product.id,
+              );
+            },
+            child: Container(
+              width: 160.w,
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.5),
+                  width: 1.5,
+                ),
+              ),
+              padding: EdgeInsets.all(12.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image
+                  Expanded(
+                    child: Center(
+                      child: CachedNetworkImage(
+                        imageUrl: product.coverImage,
+                        fit: BoxFit.contain,
+                        placeholder: (_, __) =>
+                            const CircularProgressIndicator(),
+                        errorWidget: (_, __, ___) => Icon(
+                          Icons.developer_board,
+                          size: 48.w,
+                          color: AppColors.textLight,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
+                  // Title
+                  Text(
+                    product.name,
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4.h),
+                  // Subtitle
+                  Text(
+                    _getProductSubtitle(product.name),
+                    style: GoogleFonts.poppins(
+                      color: AppColors.textLight,
+                      fontSize: 9.sp,
+                      height: 1.4,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 12.h),
+                  // Price and + button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '\$${(product.price).toStringAsFixed(2)}',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(4.w),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceVariant.withValues(
+                            alpha: 0.5,
+                          ),
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: Icon(Icons.add, color: Colors.white, size: 18.w),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -330,7 +419,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             errorWidget: (_, __, ___) => Container(
               color: AppColors.surface,
-              child: Icon(Icons.developer_board, color: AppColors.textLight, size: 48.w),
+              child: Icon(
+                Icons.developer_board,
+                color: AppColors.textLight,
+                size: 48.w,
+              ),
             ),
           ),
           // Gradient overlay at bottom
@@ -416,53 +509,153 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ─── MAIN SCROLLABLE CONTENT ────────────────────────────────
   Widget _buildHomeContent(HomeLoaded state) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
+    final displayProducts = state.filteredProducts;
+
+    return RefreshIndicator(
+      color: AppColors.primary,
+      backgroundColor: AppColors.surface,
+      onRefresh: () => context.read<HomeCubit>().refreshHomeData(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Search
+            _buildSearchBar(),
+
+            // Hero
+            _buildHeroSection(),
+
+            SizedBox(height: 48.h),
+
+            // Categories
+            _buildSectionHeader('Curated Categories'),
+            SizedBox(height: 16.h),
+            _buildCategoriesRow(state),
+
+            SizedBox(height: 36.h),
+
+            // Products
+            _buildSectionHeader(
+              'Engineering Selects',
+              trailing: 'VIEW ALL',
+              onTrailingTap: () => setState(() => _currentIndex = 1),
+            ),
+            SizedBox(height: 16.h),
+
+            // Product cards list
+            if (displayProducts.isNotEmpty)
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: displayProducts.length > 3
+                    ? 3
+                    : displayProducts.length,
+                separatorBuilder: (_, __) => SizedBox(height: 16.h),
+                itemBuilder: (_, i) => GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      ProductDetailsScreen.routeName,
+                      arguments: displayProducts[i].id,
+                    );
+                  },
+                  child: _buildProductCard(displayProducts[i]),
+                ),
+              )
+            else
+              _buildEmptyProducts(),
+
+            SizedBox(height: 36.h),
+
+            // Trending
+            _buildSectionHeader('Trending Components'),
+            SizedBox(height: 16.h),
+            _buildTrendingComponents(state),
+
+            SizedBox(height: 36.h),
+
+            // CTA
+            _buildStartProjectCTA(),
+
+            SizedBox(height: 40.h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─── START PROJECT CTA ──────────────────────────────────────
+  Widget _buildStartProjectCTA() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF2C2C2C), Color(0xFF161616)],
+        ),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.1),
+          width: 1,
+        ),
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Search
-          _buildSearchBar(),
-
-          // Hero
-          _buildHeroSection(),
-
-          SizedBox(height: 48.h),
-
-          // Categories
-          _buildSectionHeader('Curated Categories'),
-          SizedBox(height: 16.h),
-          _buildCategoriesRow(state),
-
-          SizedBox(height: 36.h),
-
-          // Products
-          _buildSectionHeader(
-            'Engineering Selects',
-            trailing: 'VIEW ALL',
-            onTrailingTap: () => setState(() => _currentIndex = 1),
+          Text(
+            'START YOUR\nPROJECT NOW',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 24.sp,
+              fontWeight: FontWeight.w800,
+              height: 1.2,
+            ),
           ),
           SizedBox(height: 16.h),
-
-          // Product cards list — tall cards matching Home.png
-          if (state.products.isNotEmpty)
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: state.products.length > 6 ? 6 : state.products.length,
-              separatorBuilder: (_, __) => SizedBox(height: 16.h),
-              itemBuilder: (_, i) => GestureDetector(
-                onTap: () {
-                  // Product details navigation placeholder
-                },
-                child: _buildProductCard(state.products[i]),
+          Text(
+            'Access premium datasheets, design\nfiles, and community projects. All with\nyour Kinetic account.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: AppColors.textLight,
+              fontSize: 12.sp,
+              height: 1.5,
+            ),
+          ),
+          SizedBox(height: 24.h),
+          GestureDetector(
+            onTap: () {
+              // Switch to the Categories tab instead of pushing a new screen
+              setState(() {
+                _currentIndex = 1;
+              });
+            },
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 14.h),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(12.r),
               ),
-            )
-          else
-            _buildEmptyProducts(),
-
-          SizedBox(height: 40.h),
+              child: Center(
+                child: Text(
+                  'Browse Products',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -480,11 +673,18 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inventory_2_outlined, color: AppColors.textLight, size: 40.w),
+            Icon(
+              Icons.inventory_2_outlined,
+              color: AppColors.textLight,
+              size: 40.w,
+            ),
             SizedBox(height: 12.h),
             Text(
               'No products found',
-              style: GoogleFonts.poppins(color: AppColors.textLight, fontSize: 14.sp),
+              style: GoogleFonts.poppins(
+                color: AppColors.textLight,
+                fontSize: 14.sp,
+              ),
             ),
           ],
         ),
@@ -497,7 +697,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // If the user is in Guest Mode (unauthenticated), it displays a friendly onboarding/welcome panel
   // prompting them to sign in. If they are logged in but have network issues, it renders a standard connection error view.
   Widget _buildErrorState(String message) {
-    final isGuest = !TokenStorage().hasToken;
+    final isGuest = !AuthLocalStorage().hasToken;
 
     return Center(
       child: Padding(
@@ -524,7 +724,10 @@ class _HomeScreenState extends State<HomeScreen> {
               isGuest
                   ? 'Please sign in to browse our high-performance electronic components.'
                   : message,
-              style: GoogleFonts.poppins(color: AppColors.textLight, fontSize: 13.sp),
+              style: GoogleFonts.poppins(
+                color: AppColors.textLight,
+                fontSize: 13.sp,
+              ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 24.h),
@@ -570,7 +773,10 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(
-          top: BorderSide(color: AppColors.surfaceVariant.withValues(alpha: 0.3), width: 1),
+          top: BorderSide(
+            color: AppColors.surfaceVariant.withValues(alpha: 0.3),
+            width: 1,
+          ),
         ),
       ),
       child: SafeArea(
@@ -593,7 +799,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildNavItem(IconData icon, String label, int index) {
     final isActive = _currentIndex == index;
     return GestureDetector(
-      onTap: () => setState(() => _currentIndex = index),
+      onTap: () => _selectTab(index),
       behavior: HitTestBehavior.opaque,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
@@ -675,9 +881,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String _getProductSubtitle(String name) {
     final lower = name.toLowerCase();
-    if (lower.contains('ic') || lower.contains('amp') || lower.contains('timer')) {
+    if (lower.contains('ic') ||
+        lower.contains('amp') ||
+        lower.contains('timer')) {
       return 'Op-amps, 555 timers, logic gates, and shift registers — the signal chain.';
-    } else if (lower.contains('sensor') || lower.contains('imu') || lower.contains('temperature')) {
+    } else if (lower.contains('sensor') ||
+        lower.contains('imu') ||
+        lower.contains('temperature')) {
       return 'Temperature, IMU, proximity — sense everything.';
     } else if (lower.contains('arduino') || lower.contains('board')) {
       return 'Development boards for rapid prototyping.';
@@ -689,7 +899,9 @@ class _HomeScreenState extends State<HomeScreen> {
       return 'Ceramic, electrolytic, and film capacitors.';
     } else if (lower.contains('transistor')) {
       return 'BJT, MOSFET, and IGBT power transistors.';
-    } else if (lower.contains('wire') || lower.contains('cable') || lower.contains('connector')) {
+    } else if (lower.contains('wire') ||
+        lower.contains('cable') ||
+        lower.contains('connector')) {
       return 'Connectors, cables, and wiring solutions.';
     } else if (lower.contains('motor') || lower.contains('servo')) {
       return 'DC motors, servos, and stepper drivers.';

@@ -1,4 +1,5 @@
-import 'package:gp_ecommerce/features/Categories/data/models/models.dart';
+import '../../Home/data/models/response_models.dart';
+import '../../Home/data/models/product_details_model.dart';
 
 abstract class ProductsState {}
 
