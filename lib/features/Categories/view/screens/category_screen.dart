@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gp_ecommerce/core/auth_local_storage.dart';
 
 import 'package:gp_ecommerce/core/constants/app_colors.dart';
 import 'package:gp_ecommerce/core/widgets/appbar.dart';
@@ -19,17 +20,27 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
-  @override
-  void initState() {
-    super.initState();
+ @override
+void initState() {
+  super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      const accessToken = 'YOUR_TOKEN';
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    final token = await AuthLocalStorage.getToken();
 
-      context.read<CategoriesCubit>().getCategories(accessToken);
-    });
-  }
+    if (!mounted) return;
 
+    if (token != null && token.isNotEmpty) {
+      context.read<CategoriesCubit>().getCategories(token);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No token found, please login again"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  });
+}
   void _showSnackBar(String message, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -54,7 +65,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             }
 
             if (state is GetCategoriesSuccess) {
-              _showSnackBar("Categories loaded successfully", Colors.green);
+              _showSnackBar(
+                "Categories loaded successfully",
+                Colors.green,
+              );
             }
           },
           builder: (context, state) {
@@ -63,6 +77,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
             if (state is GetCategoriesLoading && categories.isEmpty) {
               return const Center(child: CircularProgressIndicator());
+            }
+
+            if (categories.isEmpty) {
+              return const Center(
+                child: Text(
+                  "No categories found",
+                  style: TextStyle(color: Colors.white),
+                ),
+              );
             }
 
             return SingleChildScrollView(
@@ -76,9 +99,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       color: AppColors.white,
                     ),
                   ),
-
                   SizedBox(height: 10.h),
-
                   Text(
                     'The Ecosystem',
                     style: TextStyle(
@@ -87,9 +108,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       color: AppColors.white,
                     ),
                   ),
-
                   SizedBox(height: 15.h),
-
                   Text(
                     'Precision-grade components for engineers and makers.',
                     style: TextStyle(
@@ -98,7 +117,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       color: AppColors.white,
                     ),
                   ),
-
                   SizedBox(height: 25.h),
 
                   ...categories.map(

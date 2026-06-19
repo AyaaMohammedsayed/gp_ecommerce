@@ -19,6 +19,10 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final safeImage = imageName.isNotEmpty
+        ? imageName
+        : "https://via.placeholder.com/300";
+
     return InkWell(
       onTap: () {
         Navigator.pushNamed(
@@ -37,9 +41,8 @@ class CategoryItem extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.r),
           image: DecorationImage(
-            image: NetworkImage(imageName), // ✅ FIXED
+            image: NetworkImage(safeImage),
             fit: BoxFit.cover,
-            onError: (error, stackTrace) {},
           ),
         ),
         child: Container(

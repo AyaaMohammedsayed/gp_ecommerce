@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gp_ecommerce/core/auth_local_storage.dart';
 
 import 'package:gp_ecommerce/core/constants/app_colors.dart';
 import 'package:gp_ecommerce/features/Categories/data/models/models.dart';
@@ -19,34 +20,45 @@ class CategoryDetialsScreen extends StatefulWidget {
       _CategoryDetialsScreenState();
 }
 
-class _CategoryDetialsScreenState extends State<CategoryDetialsScreen> {
+class _CategoryDetialsScreenState
+    extends State<CategoryDetialsScreen> {
   late int categoryId;
   late String categoryName;
 
   bool _isInit = false;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+@override
+void didChangeDependencies() {
+  super.didChangeDependencies();
 
-    if (_isInit) return;
-    _isInit = true;
+  if (_isInit) return;
+  _isInit = true;
 
-    final args = ModalRoute.of(context)!
-        .settings
-        .arguments as Map<String, dynamic>;
+  final args = ModalRoute.of(context)!.settings.arguments
+      as Map<String, dynamic>;
 
-    categoryId = args['id'];
-    categoryName = args['name'];
+  categoryId = args['id'];
+  categoryName = args['name'];
 
-    const accessToken = 'YOUR_TOKEN';
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    final token = await AuthLocalStorage.getToken();
 
-    context.read<CategoriesCubit>().getCategoryProducts(
-          accessToken,
-          categoryId,
-        );
-  }
+    if (!mounted) return;
 
+    if (token != null && token.isNotEmpty) {
+      context
+          .read<CategoriesCubit>()
+          .getCategoryProducts(token, categoryId);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No token found"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  });
+}
   void _showSnackBar(String msg, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -72,11 +84,15 @@ class _CategoryDetialsScreenState extends State<CategoryDetialsScreen> {
         centerTitle: false,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.keyboard_backspace_sharp, size: 32),
+          icon: const Icon(
+            Icons.keyboard_backspace_sharp,
+            size: 32,
+          ),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
         child: BlocConsumer<CategoriesCubit, CategoriesState>(
           listener: (context, state) {
             if (state is GetCategoryProductsError) {
@@ -84,7 +100,10 @@ class _CategoryDetialsScreenState extends State<CategoryDetialsScreen> {
             }
 
             if (state is GetCategoryProductsSuccess) {
-              _showSnackBar("Products loaded successfully", Colors.green);
+              _showSnackBar(
+                "Products loaded successfully",
+                Colors.green,
+              );
             }
           },
           builder: (context, state) {
@@ -100,7 +119,8 @@ class _CategoryDetialsScreenState extends State<CategoryDetialsScreen> {
               );
             }
 
-            if (products.isEmpty && state is GetCategoryProductsSuccess) {
+            if (products.isEmpty &&
+                state is GetCategoryProductsSuccess) {
               return const Center(
                 child: Text(
                   "No products found",
@@ -120,7 +140,6 @@ class _CategoryDetialsScreenState extends State<CategoryDetialsScreen> {
                   ),
                 ),
                 SizedBox(height: 7.h),
-
                 Text(
                   '${products.length} Products',
                   style: TextStyle(
@@ -129,9 +148,7 @@ class _CategoryDetialsScreenState extends State<CategoryDetialsScreen> {
                     color: AppColors.logo,
                   ),
                 ),
-
                 SizedBox(height: 32.h),
-
                 Expanded(
                   child: GridView.builder(
                     padding: const EdgeInsets.all(8),
@@ -140,11 +157,12 @@ class _CategoryDetialsScreenState extends State<CategoryDetialsScreen> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 16,
                       mainAxisSpacing: 16,
-                      childAspectRatio: 0.5,
+                      childAspectRatio: 0.4,
                     ),
                     itemCount: products.length,
                     itemBuilder: (context, index) {
-                      ProductModel product = products[index];
+                      final ProductModel product =
+                          products[index];
 
                       return InkWell(
                         onTap: () {
