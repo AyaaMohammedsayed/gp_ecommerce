@@ -1,7 +1,9 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gp_ecommerce/core/constants/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../onboarding_screen/onboarding_screen.dart';
+import 'package:gp_ecommerce/features/Auth/view/screens/auth_screen.dart';
+import 'package:gp_ecommerce/features/Home/view/screens/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   static String routeName = '/splash';
@@ -14,7 +16,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -25,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1000),
     );
 
     _fadeAnimation = CurvedAnimation(
@@ -44,10 +45,26 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward();
+    _checkNavigation();
+  }
 
-    Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, OnboardingScreen.routeName);
-    });
+  Future<void> _checkNavigation() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+    final token = prefs.getString('token');
+
+    await Future.delayed(const Duration(milliseconds: 1200));
+
+    if (!mounted) return;
+
+    if (!hasSeenOnboarding) {
+      Navigator.pushReplacementNamed(context,OnboardingScreen.routeName);
+    } else if (token != null && token.isNotEmpty) {
+      Navigator.pushReplacementNamed(context,HomeScreen.routeName);
+    } else {
+      Navigator.pushReplacementNamed(context,AuthScreen.routeName);
+    }
   }
 
   @override
@@ -60,35 +77,16 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,
-
           child: ScaleTransition(
             scale: _scaleAnimation,
-
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'KINETIC',
-                  style: TextStyle(
-                    color: AppColors.logo,
-                    fontSize: 42,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -2,
-                  ),
-                ),
-                const Text(
-                  '.',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 42,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ],
+            child: Image.asset(
+              'assets/icon/app_icon.png',
+              width: 130,
+              height: 130,
+              fit: BoxFit.contain,
             ),
           ),
         ),

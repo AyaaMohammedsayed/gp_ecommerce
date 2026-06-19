@@ -26,14 +26,11 @@ class AuthCubit extends Cubit<AuthState> {
       await prefs.setString('userName', result.user.name);
       await prefs.setString('userEmail', result.user.email);
 
-      //temporory test
-      await prefs.setString('token', result.token);
       print('Saved token: ${prefs.getString('token')}');
-
 
       emit(AuthLoginSuccess(result.msg));
     } catch (e) {
-      emit(AuthLoginError(e.toString()));
+        emit(AuthLoginError('Invalid email or password'));
     }
   }
 
@@ -53,7 +50,7 @@ class AuthCubit extends Cubit<AuthState> {
 
       emit(AuthRegisterSuccess(result.msg));
     } catch (e) {
-      emit(AuthLoginError('Login failed. Please check your email and password.'));
+      emit(AuthLoginError('Register failed. Please check your data.'));
     }
   }
 }

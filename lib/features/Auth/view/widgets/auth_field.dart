@@ -7,6 +7,7 @@ class AuthField extends StatelessWidget {
   final IconData icon;
   final IconData? suffixIcon;
   final bool obscureText;
+  final VoidCallback? onSuffixTap;
 
   const AuthField({
     super.key,
@@ -15,6 +16,7 @@ class AuthField extends StatelessWidget {
     required this.icon,
     this.suffixIcon,
     this.obscureText = false,
+    this.onSuffixTap,
   });
 
   @override
@@ -31,15 +33,13 @@ class AuthField extends StatelessWidget {
           filled: true,
           fillColor: AppColors.surfaceVariant,
           hintText: hint,
-          hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: AppColors.textLight.withOpacity(0.6),
-            fontSize: 13,
-          ),
           prefixIcon: Icon(icon, color: AppColors.textLight, size: 20),
           suffixIcon: suffixIcon != null
-              ? Icon(suffixIcon, color: AppColors.textLight, size: 20)
+              ? GestureDetector(
+            onTap: onSuffixTap,
+            child: Icon(suffixIcon, color: AppColors.textLight, size: 20),
+          )
               : null,
-          contentPadding: EdgeInsets.zero,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(9),
             borderSide: BorderSide.none,

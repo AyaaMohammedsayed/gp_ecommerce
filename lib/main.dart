@@ -12,14 +12,13 @@ import 'package:gp_ecommerce/features/payment/view/screens/payment_screen.dart';
 import 'package:gp_ecommerce/features/product_details/view/screens/product_details.dart';
 import 'core/constants/app_theme.dart';
 import 'features/Auth/view/screens/auth_screen.dart';
-import 'features/Auth/view/screens/forgot_password_screen.dart';
 import 'features/Auth/view/screens/register_screen.dart';
 import 'core/constants/dio_helper.dart';
 import 'features/Home/view_model/home_cubit.dart';
 
 void main() {
-  DioHelper.init();
   WidgetsFlutterBinding.ensureInitialized();
+  DioHelper.init();
   runApp(const MyApp());
 }
 
@@ -34,26 +33,26 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MultiBlocProvider(
-          providers: [BlocProvider(create: (context) => HomeCubit())],
+          providers: [
+            BlocProvider(create: (context) => HomeCubit()),
+            BlocProvider(create: (context) => AuthCubit()),
+          ],
           child: MaterialApp(
             title: 'Kinetic - Electronics Store',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.darkTheme,
-            home: const HomeScreen(),
+            initialRoute: SplashScreen.routeName,
             routes: {
               SplashScreen.routeName: (context) => const SplashScreen(),
               OnboardingScreen.routeName: (context) => const OnboardingScreen(),
               AuthScreen.routeName: (context) => const AuthScreen(),
               RegisterScreen.routeName: (context) => const RegisterScreen(),
               CartScreen.routeName: (context) => const CartScreen(),
-              ForgotPasswordScreen.routeName: (context) =>
-                  const ForgotPasswordScreen(),
               HomeScreen.routeName: (context) => const HomeScreen(),
               PaymentScreen.routeName: (context) => const PaymentScreen(),
               CategoriesScreen.routeName: (context) => const CategoriesScreen(),
               ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
-              CategoryDetialsScreen.routeName: (context) =>
-                  CategoryDetialsScreen(),
+              CategoryDetialsScreen.routeName: (context) => CategoryDetialsScreen(),
             },
           ),
         );

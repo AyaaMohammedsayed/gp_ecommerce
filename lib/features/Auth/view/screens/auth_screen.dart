@@ -8,7 +8,6 @@ import '../widgets/footer_text.dart';
 import '../widgets/label_text.dart';
 import 'package:flutter/gestures.dart';
 import 'register_screen.dart';
-import 'forgot_password_screen.dart';
 
 
 class AuthScreen extends StatefulWidget {
@@ -21,6 +20,8 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+
+  bool isPasswordHidden = true;
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -42,12 +43,11 @@ class _AuthScreenState extends State<AuthScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
           );
-          print("Login Success");
 
-          /*Navigator.pushReplacementNamed(
+          Navigator.pushReplacementNamed(
             context,
             '/home',
-          );*/
+          );
         }
 
         if (state is AuthLoginError) {
@@ -195,23 +195,6 @@ class _AuthScreenState extends State<AuthScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const LabelText(text: 'PASSWORD'),
-                      RichText(
-                        text: TextSpan(
-                          text: 'Forgot?',
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: AppColors.logo,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushNamed(
-                                context,
-                                ForgotPasswordScreen.routeName,
-                              );
-                            },
-                        ),
-                      ),
                     ],
                   ),
 
@@ -221,31 +204,15 @@ class _AuthScreenState extends State<AuthScreen> {
                     controller: passwordController,
                     hint: '••••••••',
                     icon: Icons.lock_outline,
-                    suffixIcon: Icons.visibility_outlined,
-                    obscureText: true,
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  Row(
-                    children: [
-                      Container(
-                        width: 17,
-                        height: 17,
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceVariant,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Remember this device for 30 days',
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textLight,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+                    suffixIcon: isPasswordHidden
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    obscureText: isPasswordHidden,
+                    onSuffixTap: () {
+                      setState(() {
+                        isPasswordHidden = !isPasswordHidden;
+                      });
+                    },
                   ),
 
                   const SizedBox(height: 34),
@@ -343,8 +310,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
                   const Padding(
                     padding: EdgeInsets.only(bottom: 26),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 18,
+                      runSpacing: 8,
                       children: [
                         FooterText(text: 'Terms of Service'),
                         FooterText(text: 'Privacy Policy'),
