@@ -13,6 +13,12 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final safeImage = product.coverImage.isNotEmpty
+        ? product.coverImage
+        : "https://via.placeholder.com/300";
+
+    final safePrice = product.price.toStringAsFixed(2);
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.quantityBg,
@@ -29,7 +35,7 @@ class ProductItem extends StatelessWidget {
                 topRight: Radius.circular(14.r),
               ),
               child: Image.network(
-                product.coverImage,
+                safeImage,
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
@@ -44,8 +50,7 @@ class ProductItem extends StatelessWidget {
                 vertical: 10.h,
               ),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     product.name,
@@ -61,7 +66,7 @@ class ProductItem extends StatelessWidget {
                   SizedBox(height: 8.h),
 
                   Text(
-                    product.price.toString(),
+                    safePrice,
                     style: TextStyle(
                       color: AppColors.logo,
                       fontSize: 18.sp,
