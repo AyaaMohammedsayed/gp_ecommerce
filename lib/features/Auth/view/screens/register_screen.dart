@@ -22,6 +22,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  bool isPasswordHidden = true;
+  bool isConfirmPasswordHidden = true;
+
   @override
   void dispose() {
     nameController.dispose();
@@ -131,8 +134,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     controller: passwordController,
                     hint: '••••••••',
                     icon: Icons.lock_outline,
-                    suffixIcon: Icons.visibility_outlined,
-                    obscureText: true,
+                    suffixIcon: isPasswordHidden
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    obscureText: isPasswordHidden,
+                    onSuffixTap: () {
+                      setState(() {
+                        isPasswordHidden = !isPasswordHidden;
+                      });
+                    },
                   ),
 
                   const SizedBox(height: 18),
@@ -143,8 +153,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     controller: confirmPasswordController,
                     hint: '••••••••',
                     icon: Icons.lock_outline,
-                    suffixIcon: Icons.visibility_outlined,
-                    obscureText: true,
+                    suffixIcon: isConfirmPasswordHidden
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    obscureText: isConfirmPasswordHidden,
+                    onSuffixTap: () {
+                      setState(() {
+                        isConfirmPasswordHidden = !isConfirmPasswordHidden;
+                      });
+                    },
                   ),
 
                   const SizedBox(height: 34),
