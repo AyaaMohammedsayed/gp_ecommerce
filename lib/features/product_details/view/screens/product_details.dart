@@ -1,169 +1,270 @@
 import 'package:flutter/material.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/core/constants/app_images.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:gp_ecommerce/core/auth_local_storage.dart';
 
-class ProductDetailsScreen extends StatelessWidget {
+import 'package:gp_ecommerce/core/constants/app_colors.dart';
+import 'package:gp_ecommerce/features/product_details/view_model/product_cubit.dart';
+import 'package:gp_ecommerce/features/product_details/view_model/product_states.dart';
+
+class ProductDetailsScreen extends StatefulWidget {
   static String routeName = '/product-details';
+
+  const ProductDetailsScreen({super.key});
+
+  @override
+  State<ProductDetailsScreen> createState() =>
+      _ProductDetailsScreenState();
+}
+
+class _ProductDetailsScreenState
+    extends State<ProductDetailsScreen> {
+  late int productId;
+  int currentImage = 0;
+
+  bool _isInit = false;
+
+@override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+
+  if (_isInit) return;
+  _isInit = true;
+
+  productId =
+      ModalRoute.of(context)!.settings.arguments as int;
+
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    final token = await AuthLocalStorage.getToken();
+
+    if (token != null && token.isNotEmpty) {
+      context.read<ProductsCubit>().getProductDetails(
+            token,
+           productId
+          );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No token found"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  });
+}
   @override
   Widget build(BuildContext context) {
-    final String categoryName = 
-    ModalRoute.of(context)!.settings.arguments as String;
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          categoryName,
-          style: TextStyle(
-            color: AppColors.logo,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.keyboard_backspace_sharp,
-            size: 32,
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-       Container(
-  height: 260,
-  
-  width: double.infinity,
-  decoration: BoxDecoration(
-    color: Colors.grey[800],
-    image: DecorationImage(
-      image: AssetImage(AppImages.transformers),
-      fit: BoxFit.cover,
-    ),
-  ),
-),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "DHT22 Temp & Humidity",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+      body: BlocConsumer<ProductsCubit, ProductsState>(
+        listener: (context, state) {
+          if (state is GetProductDetailsError) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text(state.error),
+                ),
+              );
+          }
+        },
+        builder: (context, state) {
+          final cubit = context.read<ProductsCubit>();
+          final product = cubit.productDetails;
+
+          if (state is GetProductDetailsLoading &&
+              product == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (product == null) {
+            return const Center(
+              child: Text(
+                'No Product Found',
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+
+          final safeImages =
+              product.images.isNotEmpty ? product.images : [];
+
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// IMAGES
+                Stack(
+                  children: [
+                    SizedBox(
+                      height: 260,
+                      width: double.infinity,
+                      child: safeImages.isEmpty
+                          ? Container(
+                              color: Colors.grey,
+                              child: const Icon(
+                                Icons.image,
+                                size: 80,
+                                color: Colors.white,
+                              ),
+                            )
+                          : PageView.builder(
+                              itemCount: safeImages.length,
+                              onPageChanged: (index) {
+                                setState(() {
+                                  currentImage = index;
+                                });
+                              },
+                              itemBuilder: (context, index) {
+                                return Image.network(
+                                  safeImages[index],
+                                  fit: BoxFit.cover,
+                                  errorBuilder:
+                                      (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.grey,
+                                      child: const Icon(
+                                        Icons.broken_image,
+                                        size: 80,
+                                        color: Colors.white,
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                     ),
+
+                    SafeArea(
+                      child: IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(
+                          Icons.keyboard_backspace_sharp,
+                          color: Colors.white,
+                          size: 32,
+                        ),
+                      ),
+                    ),
+
+                    if (safeImages.length > 1)
+                      Positioned(
+                        bottom: 15,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          mainAxisAlignment:
+                              MainAxisAlignment.center,
+                          children: List.generate(
+                            safeImages.length,
+                            (index) => Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 4),
+                              width:
+                                  currentImage == index ? 12 : 8,
+                              height:
+                                  currentImage == index ? 12 : 8,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: currentImage == index
+                                    ? AppColors.logo
+                                    : Colors.white54,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 20,
                   ),
-                  const SizedBox(height: 10),
-                  Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "\$3.99",
-                        style: TextStyle(
-                          fontSize: 24,
+                      Text(
+                        product.name,
+                        style: const TextStyle(
+                          fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(width: 15),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.teal.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: const Text(
-                          "● IN STOCK — 530 UNITS",
-                          style: TextStyle(
-                            color: Colors.tealAccent,
-                            fontSize: 12,
+
+                      const SizedBox(height: 10),
+
+                      Row(
+                        children: [
+                          Text(
+                            "\$${product.discountedPrice}",
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
+
+                          const SizedBox(width: 15),
+
+                          if (product.showStock)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    Colors.teal.withOpacity(0.2),
+                                borderRadius:
+                                    BorderRadius.circular(15),
+                              ),
+                              child: Text(
+                                "● IN STOCK — ${product.stock} UNITS",
+                                style: const TextStyle(
+                                  color: Colors.tealAccent,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      const Text(
+                        "OVERVIEW",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
+
+                      const SizedBox(height: 10),
+
+                      Html(
+                        data: product.description ?? "",
+                        style: {
+                          "*": Style(color: Colors.white70),
+                          "strong": Style(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          "p": Style(margin: Margins.zero),
+                        },
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      _buildAddToCartSection(),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "OVERVIEW",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Digital temperature and humidity sensor with single-wire interface. ±0.5 °C accuracy.",
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "TECHNICAL SPECIFICATIONS",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildSpecsTable(),
-                  const SizedBox(height: 30),
-                  _buildAddToCartSection(),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSpecsTable() {
-    final specs = {
-      "Type": "Digital capacitive",
-      "Temp Range": "-40 to +80 °C",
-      "Temp Accuracy": "±0.5 °C",
-      "Humidity Range": "0 – 100 % RH",
-      "Interface": "Single-wire",
-      "Supply Voltage": "3.3 – 5.5 V",
-      "Sample Rate": "0.5 Hz (2 s interval)",
-      "Package": "4-pin DIP",
-    };
-
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: specs.entries
-            .map(
-              (entry) => Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      entry.key,
-                      style: const TextStyle(color: Colors.white60),
-                    ),
-                    Text(
-                      entry.value,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
                 ),
-              ),
-            )
-            .toList(),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/features/Categories/data/models/product.dart';
+import 'package:gp_ecommerce/features/Categories/data/models/models.dart';
 
 class ProductItem extends StatelessWidget {
-  final Product product;
+  final ProductModel product;
 
   const ProductItem({
     super.key,
@@ -13,6 +13,12 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final safeImage = product.coverImage.isNotEmpty
+        ? product.coverImage
+        : "https://via.placeholder.com/300";
+
+    final safePrice = product.price.toStringAsFixed(2);
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.quantityBg,
@@ -28,8 +34,8 @@ class ProductItem extends StatelessWidget {
                 topLeft: Radius.circular(14.r),
                 topRight: Radius.circular(14.r),
               ),
-              child: Image.asset(
-                product.ImageName,
+              child: Image.network(
+                safeImage,
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
@@ -46,21 +52,21 @@ class ProductItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-               Text(
-  product.name,
-  maxLines: 2,
-  overflow: TextOverflow.ellipsis,
-  style: TextStyle(
-    color: AppColors.white,
-    fontSize: 14.sp,
-    fontWeight: FontWeight.w500,
-  ),
-),
+                  Text(
+                    product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
 
                   SizedBox(height: 8.h),
 
                   Text(
-                    product.price,
+                    safePrice,
                     style: TextStyle(
                       color: AppColors.logo,
                       fontSize: 18.sp,
