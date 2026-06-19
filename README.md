@@ -86,7 +86,11 @@ kinetic_app/
 * A minimalist, professional interface designed with a focus on **Dark Mode** and industrial aesthetics.
 
 ---
+## Documentation
 
+- 📄 **Graduation Project Report:** [Project Report]()
+- 🎤 **Project Presentation:** [Presentation Slides](https://canva.link/3osihy86hholr40)
+---
 ##  Installation
 
 1. **Clone the repository:**
@@ -123,11 +127,11 @@ Developed by the Flutter Track Graduation Team under the mentorship of **DEPI**.
 | Name | Role | LinkedIn |
 | :--- | :--- | :--- |
 | **Aya Mohamed** | Flutter Developer & Team Lead | [LinkedIn](https://www.linkedin.com/in/ayamohamedsayed/) |
-| **Jana Mohamed** | Flutter Developer | [LinkedIn]() |
-| **Menna Hesham** | Flutter Developer | [LinkedIn]() |
-| **Fatma Abdelsalam** | Flutter Developer | [LinkedIn]() |
-| **Mariel Robert John** | Flutter Developer | [LinkedIn]() |
-| **Ephraim Yousef** | Backend Developer | [LinkedIn]() |
+| **Jana Mohamed** | Flutter Developer | 
+| **Menna Hesham** | Flutter Developer |
+| **Fatma Abdelsalam** | Flutter Developer |
+| **Mariel Robert John** | Flutter Developer |
+| **Ephraim Yousef** | Backend Developer |  
 
 ---
 
