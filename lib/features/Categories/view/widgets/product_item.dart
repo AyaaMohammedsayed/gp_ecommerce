@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/features/Categories/data/models/product.dart';
+import 'package:gp_ecommerce/features/Categories/data/models/models.dart';
 
 class ProductItem extends StatelessWidget {
-  final Product product;
+  final ProductModel product;
 
   const ProductItem({
     super.key,
@@ -28,8 +28,8 @@ class ProductItem extends StatelessWidget {
                 topLeft: Radius.circular(14.r),
                 topRight: Radius.circular(14.r),
               ),
-              child: Image.asset(
-                product.ImageName,
+              child: Image.network(
+                product.coverImage,
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
@@ -44,23 +44,24 @@ class ProductItem extends StatelessWidget {
                 vertical: 10.h,
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
-               Text(
-  product.name,
-  maxLines: 2,
-  overflow: TextOverflow.ellipsis,
-  style: TextStyle(
-    color: AppColors.white,
-    fontSize: 14.sp,
-    fontWeight: FontWeight.w500,
-  ),
-),
+                  Text(
+                    product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
 
                   SizedBox(height: 8.h),
 
                   Text(
-                    product.price,
+                    product.price.toString(),
                     style: TextStyle(
                       color: AppColors.logo,
                       fontSize: 18.sp,

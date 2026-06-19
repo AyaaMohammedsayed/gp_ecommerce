@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gp_ecommerce/features/Cart/view/screens/cart_screen.dart';
+import 'package:gp_ecommerce/features/Categories/data/api_service/api_service.dart';
 import 'package:gp_ecommerce/features/Categories/view/screens/category_detials_screen.dart';
 import 'package:gp_ecommerce/features/Categories/view/screens/category_screen.dart';
+import 'package:gp_ecommerce/features/Categories/view_model/category_cubit.dart';
 import 'package:gp_ecommerce/features/Home/view/screens/home_screen.dart';
 import 'package:gp_ecommerce/features/payment/view/screens/payment_screen.dart';
+import 'package:gp_ecommerce/features/product_details/data/api_service.dart';
 import 'package:gp_ecommerce/features/product_details/view/screens/product_details.dart';
+import 'package:gp_ecommerce/features/product_details/view_model/product_cubit.dart';
 
 import 'core/constants/app_theme.dart';
 import 'features/Auth/view/screens/auth_screen.dart';
@@ -32,7 +36,21 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MultiBlocProvider(
-          providers: [BlocProvider(create: (context) => HomeCubit())],
+      providers: [
+    BlocProvider(
+      create: (_) => HomeCubit(),
+    ),
+    BlocProvider(
+      create: (_) => CategoriesCubit(
+   
+      ),
+    ),
+    BlocProvider(
+      create: (_) => ProductsCubit(
+   
+      ),
+    ),
+  ],
           child: MaterialApp(
             title: 'Kinetic - Electronics Store',
             debugShowCheckedModeBanner: false,
