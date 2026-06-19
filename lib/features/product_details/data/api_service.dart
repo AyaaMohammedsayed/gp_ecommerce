@@ -1,122 +1,91 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import 'package:gp_ecommerce/core/api_constants.dart';
 import 'package:gp_ecommerce/features/Categories/data/models/models.dart';
-import 'package:http/http.dart' as http;
 
 class ProductsApiService {
-  Future getProducts(
-    String accessToken,
-  ) async {
-    final uri = Uri.parse(
-      '${ApiConstants.baseUrl}/products',
-    );
+  final http.Client _client;
+
+  ProductsApiService({http.Client? client})
+      : _client = client ?? http.Client();
+
+  Map<String, String> _headers(String token) {
+    return {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+  }
+
+  Future<ProductsResponseModel> getProducts(String token) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}/products');
 
     try {
-      final response = await http.get(
-        uri,
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await _client
+          .get(uri, headers: _headers(token))
+          .timeout(const Duration(seconds: 15));
+
+      final jsonData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-
-        return ProductsResponseModel.fromJson(
-          json,
-        );
+        return ProductsResponseModel.fromJson(jsonData);
       } else if (response.statusCode == 401) {
-        throw Exception(
-          'Unauthorized. Please check your access token.',
-        );
+        throw Exception('Unauthorized: Invalid or expired token');
       } else {
-        throw Exception(
-          'Failed to Get Products: ${response.body}',
-        );
+        throw Exception('Failed to fetch products');
       }
     } catch (e) {
-      throw Exception(
-        'Error Getting Products: $e',
-      );
+      throw Exception('Products API Error: $e');
     }
   }
 
-  Future getOffers(
-    String accessToken,
-  ) async {
-    final uri = Uri.parse(
-      '${ApiConstants.baseUrl}/products/offers',
-    );
+  Future<ProductsResponseModel> getOffers(String token) async {
+    final uri =
+        Uri.parse('${ApiConstants.baseUrl}/products/offers');
 
     try {
-      final response = await http.get(
-        uri,
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await _client
+          .get(uri, headers: _headers(token))
+          .timeout(const Duration(seconds: 15));
+
+      final jsonData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-
-        return ProductsResponseModel.fromJson(
-          json,
-        );
+        return ProductsResponseModel.fromJson(jsonData);
       } else if (response.statusCode == 401) {
-        throw Exception(
-          'Unauthorized. Please check your access token.',
-        );
+        throw Exception('Unauthorized: Invalid or expired token');
       } else {
-        throw Exception(
-          'Failed to Get Offers: ${response.body}',
-        );
+        throw Exception('Failed to fetch offers');
       }
     } catch (e) {
-      throw Exception(
-        'Error Getting Offers: $e',
-      );
+      throw Exception('Offers API Error: $e');
     }
   }
 
-  Future getProductDetails(
-    String accessToken,
+  Future<ProductDetailsModel> getProductDetails(
+    String token,
     int productId,
   ) async {
-    final uri = Uri.parse(
-      '${ApiConstants.baseUrl}/products/$productId',
-    );
+    final uri =
+        Uri.parse('${ApiConstants.baseUrl}/products/$productId');
 
     try {
-      final response = await http.get(
-        uri,
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-          'Content-Type': 'application/json',
-        },
-      );
+      final response = await _client
+          .get(uri, headers: _headers(token))
+          .timeout(const Duration(seconds: 15));
+
+      final jsonData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-
-        return ProductDetailsModel.fromJson(
-          json['data'],
-        );
+        return ProductDetailsModel.fromJson(jsonData['data']);
       } else if (response.statusCode == 401) {
-        throw Exception(
-          'Unauthorized. Please check your access token.',
-        );
+        throw Exception('Unauthorized: Invalid or expired token');
       } else {
-        throw Exception(
-          'Failed to Get Product Details: ${response.body}',
-        );
+        throw Exception('Failed to fetch product details');
       }
     } catch (e) {
-      throw Exception(
-        'Error Getting Product Details: $e',
-      );
+      throw Exception('Product Details API Error: $e');
     }
   }
 }
