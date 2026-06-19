@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gp_ecommerce/core/constants/app_colors.dart';
-
 import '../Auth/view/screens/auth_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatelessWidget {
   static String routeName = '/onboarding';
@@ -158,8 +158,11 @@ class OnboardingScreen extends StatelessWidget {
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(40),
-                          onTap: () {
-                            Navigator.pushNamed(context, AuthScreen.routeName);
+                          onTap: () async {
+                            final prefs = await SharedPreferences.getInstance();
+                            await prefs.setBool('hasSeenOnboarding', true);
+
+                            Navigator.pushReplacementNamed(context,AuthScreen.routeName);
                           },
                           child: Center(
                             child: Text(
@@ -178,8 +181,10 @@ class OnboardingScreen extends StatelessWidget {
 
                     const SizedBox(height: 28),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 8,
+                      runSpacing: 8,
                       children: [
                         const CircleAvatar(
                           radius: 14,
