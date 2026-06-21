@@ -17,18 +17,16 @@
 
 ---
 
-### ✨ Key Features
+### Key Features
 
 | Feature | Description |
 | :--- | :--- |
-| **Smart Dashboard** | A modern, minimalist hub showcasing featured products, categories, and latest electronics arrivals. |
 | **Product Discovery** | Advanced search and smart filters to locate hardware components with high precision. |
 | **Product Details** | High-fidelity pages with technical specs, component images, and "Add to Cart" functionality. |
 | **Favorites Gallery** | A personalized space to save essential parts for future electronic projects. |
 | **Shopping Cart** | A seamless interface to manage item quantities and review final order summaries. |
 | **Simulated Checkout** | A smooth, simulated payment process to demonstrate the end-to-end shopping workflow. |
 | **User Profile** | Manage account details, saved addresses, and track order status/history. |
-| **Dynamic Theme** | A sleek, eye-friendly Dark Mode aesthetic perfect for technical and engineering environments. |
 | **State Management** | Powered by BLoC architecture to ensure smooth transitions and robust performance. |
 | **Responsive Design** | A mobile-first UI perfectly optimized for all screen sizes and device orientations. |
 
@@ -37,7 +35,7 @@
 ##  Technologies Used
 - **Framework:** Flutter & Dart
 - **State Management:** Bloc (Business Logic Component)
-- **Networking:** HTTP API Integration
+- **Networking:** HTTP & Dio API Integration
 - **Local Storage:** SharedPreferences 
 - **UI/UX Design:** Figma (High-end Industrial Art style)
 
@@ -86,10 +84,16 @@ kinetic_app/
 * A minimalist, professional interface designed with a focus on **Dark Mode** and industrial aesthetics.
 
 ---
-## Documentation
+
+##  Future Work
+<img width="1025" height="563" alt="image" src="https://github.com/user-attachments/assets/2fea11d7-92e4-4dbd-9007-5ef07d8eacd4" />
+
+---
+## Documentation and DEMO
 
 -  **Graduation Project Report:** [Project Report](https://github.com/AyaaMohammedsayed/gp_ecommerce/blob/main/Book%20DEPI%20GP.pdf)
 -  **Project Presentation:** [Presentation Slides](https://canva.link/7qtc5xu6p8y6q0s)
+- **Project DEMO:** [Project DEMO]()
 ---
 ##  Installation
 
@@ -127,11 +131,11 @@ Developed by the Flutter Track Graduation Team under the mentorship of **DEPI**.
 | Name | Role | LinkedIn |
 | :--- | :--- | :--- |
 | **Aya Mohamed** | Flutter Developer & Team Lead | [LinkedIn](https://www.linkedin.com/in/ayamohamedsayed/) |
-| **Jana Mohamed** | Flutter Developer | 
-| **Menna Hesham** | Flutter Developer |
-| **Fatma Abdelsalam** | Flutter Developer |
-| **Mariel Robert John** | Flutter Developer |
-| **Ephraim Yousef** | Backend Developer |  
+| **Jana Hagras** | Flutter Developer |  [LinkedIn](https://www.linkedin.com/in/janahagras/) |
+| **Menna Hesham** | Flutter Developer | [LinkedIn](https://www.linkedin.com/in/menna-elbannaa/) |
+| **Fatma Abdelsalam** | Flutter Developer | [LinkedIn](https://www.linkedin.com/in/fatemaaaah-abd-elsalaam/) |
+| **Mariel Robert John** | Flutter Developer |  [LinkedIn](https://www.linkedin.com/in/mariel-robertjohn/) |
+| **Ephraim Yousef** | Backend Developer |   [LinkedIn](https://www.linkedin.com/in/ephra1m/) |
 
 ---
 
