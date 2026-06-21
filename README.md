@@ -64,13 +64,17 @@ kinetic_app/
 ## App Screenshots
 
 ###  Home & Categories
-<img src="https://github.com/user-attachments/assets/b50928a2-3a29-4b75-b506-f927c86c9ed8" width="250"/>
+<img width="438" height="2473" alt="Home" src="https://github.com/user-attachments/assets/1785f21d-7b2a-4b66-bf6a-5c07f6cdf321" />
+
+
 
 ###  Product Details
-<img src="https://github.com/user-attachments/assets/bf2182f5-fc56-41d4-bfb6-69e31327d74f" width="250"/>
+<img width="392" height="1257" alt="Product Details" src="https://github.com/user-attachments/assets/16793e63-1abb-4445-9735-0f7f589d58f5" />
+
 
 ###  Cart
-<img src="https://github.com/user-attachments/assets/b3842325-f58b-40d1-809f-6c817ee779e0" width="250"/>
+<img width="418" height="1892" alt="Cart" src="https://github.com/user-attachments/assets/62534a95-90c0-4f29-976b-607b95319e4f" />
+
 
 ---
 
