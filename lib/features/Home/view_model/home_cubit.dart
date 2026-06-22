@@ -4,7 +4,6 @@ import '../data/models/product_model.dart';
 import '../data/models/category_model.dart';
 import '../data/api_service/api_service.dart';
 import '../../../../core/auth_local_storage.dart';
-
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
@@ -122,6 +121,7 @@ class HomeCubit extends Cubit<HomeState> {
   void searchProducts(String query) {
     if (state is HomeLoaded) {
       final currentState = state as HomeLoaded;
+
       emit(currentState.copyWith(searchQuery: query));
     }
   }
