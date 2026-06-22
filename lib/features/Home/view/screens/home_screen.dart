@@ -14,20 +14,21 @@ import '../../../profile/view_model/cubit.dart';
 import '../../../Auth/view/screens/auth_screen.dart';
 import '../../../product_details/view/screens/product_details.dart';
 import '../../../../core/widgets/appbar.dart';
+import 'package:gp_ecommerce/features/Favorites/view_model/cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
-  const HomeScreen({super.key});
-
+  final int initialIndex;
+  const HomeScreen({super.key, this.initialIndex = 0});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
-
+  late int _currentIndex;
   @override
   void initState() {
+    _currentIndex = widget.initialIndex;
     super.initState();
     context.read<HomeCubit>().loadHomeData();
   }
@@ -54,8 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _selectTab(int index) {
     if (index == 3) {
       context.read<ProfileCubit>().checkLoginStatus();
+    } else if (index == 2) {
+      context.read<FavoritesCubit>().loadFavorites();
     }
-
     setState(() => _currentIndex = index);
   }
 
@@ -769,32 +771,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ─── BOTTOM NAV BAR ─────────────────────────────────────────
   Widget _buildBottomNav() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border(
-          top: BorderSide(
-            color: AppColors.surfaceVariant.withValues(alpha: 0.3),
-            width: 1,
+      return Container(
+        decoration: BoxDecoration(
+          color: AppColors.cardColor,
+          border: Border(
+            top: BorderSide(
+              color: AppColors.dividerColor,
+              width: 1,
+            ),
           ),
         ),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.home_rounded, 'HOME', 0),
-              _buildNavItem(Icons.grid_view_rounded, 'CATEGORIES', 1),
-              _buildNavItem(Icons.favorite_rounded, 'FAVORITES', 2),
-              _buildNavItem(Icons.person_rounded, 'PROFILE', 3),
-            ],
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(Icons.home_outlined, 'HOME', 0),
+                _buildNavItem(Icons.grid_view_outlined, 'CATEGORIES', 1),
+                _buildNavItem(Icons.favorite_border, 'FAVORITES', 2),
+                _buildNavItem(Icons.person_outline, 'PROFILE', 3),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
   Widget _buildNavItem(IconData icon, String label, int index) {
     final isActive = _currentIndex == index;
@@ -818,7 +820,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: isActive ? AppColors.primary : AppColors.textLight,
                 fontSize: 9.sp,
                 fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-                letterSpacing: 0.5,
+                letterSpacing: 0.5
               ),
             ),
           ],
