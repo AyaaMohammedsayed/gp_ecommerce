@@ -27,7 +27,7 @@
 | **Shopping Cart** | A seamless interface to manage item quantities and review final order summaries. |
 | **Simulated Checkout** | A smooth, simulated payment process to demonstrate the end-to-end shopping workflow. |
 | **User Profile** | Manage account details, saved addresses, and track order status/history. |
-| **State Management** | Powered by BLoC architecture to ensure smooth transitions and robust performance. |
+| **State Management** | Powered by Cubit architecture to ensure smooth transitions and robust performance. |
 | **Responsive Design** | A mobile-first UI perfectly optimized for all screen sizes and device orientations. |
 
 ---
