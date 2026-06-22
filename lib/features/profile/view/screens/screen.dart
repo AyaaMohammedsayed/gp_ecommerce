@@ -6,27 +6,52 @@ import '../../view_model/cubit.dart';
 import '../../data/data.dart';
 import '../widgets/widgets.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile';
 
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Always re-check login status when this screen is opened, instead of
+    // relying on whatever state ProfileCubit happens to be in already —
+    // that's what caused "Guest" to show up when navigating from Cart.
+    context.read<ProfileCubit>().checkLoginStatus();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-
-      // 📦 جسم الصفحة
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.textDark),
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
+        title: const Text(
+          'Profile',
+          style: TextStyle(
+            color: AppColors.textDark,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, state) {
-          // 🔄 حالة التحميل
           if (state is ProfileLoading) {
             return const Center(
               child: CircularProgressIndicator(color: AppColors.primary),
             );
           }
 
-          // ❌ حالة الخطأ
           if (state is ProfileError) {
             return Center(
               child: Column(
@@ -51,36 +76,29 @@ class ProfileScreen extends StatelessWidget {
             );
           }
 
-          // 🚪 حالة تسجيل الخروج
           if (state is ProfileLoggedOut) {
             return _buildProfileView(context, User.guest());
           }
 
-          // ✅ حالة تحميل البيانات
           if (state is ProfileLoaded) {
             return _buildProfileView(context, state.user);
           }
 
-          // الحالة الأولية
           return _buildProfileView(context, User.guest());
         },
       ),
     );
   }
 
-  // 👤 واجهة المستخدم المسجل
   Widget _buildProfileView(BuildContext context, User user) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          // 🖼️ صورة البروفايل
           Center(
             child: ProfileAvatar(imageUrl: user.profileImageUrl, size: 120),
           ),
           const SizedBox(height: 16),
-
-          // 👤 اسم المستخدم
           Text(
             user.name,
             style: const TextStyle(
@@ -90,15 +108,11 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-
-          // 📧 الإيميل
           Text(
             user.email,
             style: const TextStyle(color: AppColors.textLight, fontSize: 16),
           ),
           const SizedBox(height: 32),
-
-          // 📋 معلومات إضافية
           InfoTile(icon: Icons.email, label: 'Email', value: user.email),
           InfoTile(
             icon: Icons.phone,
@@ -111,8 +125,6 @@ class ProfileScreen extends StatelessWidget {
             value: user.id,
           ),
           const SizedBox(height: 32),
-
-          // 🚪 زر تسجيل الخروج / تسجيل الدخول
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -147,8 +159,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // 👤 واجهة المستخدم غير المسجل
-  // 🚪 حوار تأكيد تسجيل الخروج
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
