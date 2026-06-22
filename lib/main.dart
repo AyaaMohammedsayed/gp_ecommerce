@@ -21,6 +21,9 @@ import 'package:gp_ecommerce/features/Categories/view_model/category_cubit.dart'
 import 'package:gp_ecommerce/features/Home/view/screens/home_screen.dart';
 import 'package:gp_ecommerce/features/payment/view/screens/payment_screen.dart';
 import 'package:gp_ecommerce/features/product_details/view/screens/product_details.dart';
+import 'package:gp_ecommerce/features/Cart/view_model/cubit.dart';
+import 'package:gp_ecommerce/features/Favorites/view_model/cubit.dart';
+import 'package:gp_ecommerce/features/Favorites/view/screens/screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +48,8 @@ class MyApp extends StatelessWidget {
             BlocProvider(create: (_) => AuthCubit()),
             BlocProvider(create: (_) => CategoriesCubit()),
             BlocProvider(create: (_) => ProductsCubit()),
+            BlocProvider(create: (_) => CartCubit()),
+            BlocProvider(create: (_) => FavoritesCubit()),
             BlocProvider(create: (_) => ProfileCubit(ProfileRepositoryImpl())),
           ],
           child: MaterialApp(
@@ -59,6 +64,7 @@ class MyApp extends StatelessWidget {
               RegisterScreen.routeName: (context) => const RegisterScreen(),
               CartScreen.routeName: (context) => const CartScreen(),
               HomeScreen.routeName: (context) => const HomeScreen(),
+              FavoritesScreen.routeName: (context) => const FavoritesScreen(),
               PaymentScreen.routeName: (context) => const PaymentScreen(),
               CategoriesScreen.routeName: (context) => const CategoriesScreen(),
               ProductDetailsScreen.routeName: (context) =>

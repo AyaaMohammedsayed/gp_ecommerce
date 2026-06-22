@@ -1,37 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gp_ecommerce/core/constants/app_colors.dart';
+import 'package:gp_ecommerce/features/Cart/data/cart_item.dart';
+import 'package:gp_ecommerce/features/Cart/view_model/cubit.dart';
 
-// Mock order item (to be replaced)
-class _OrderItem {
-  final String name;
-  final String subtitle;
-  final String price;
-  final String? imageUrl;
-
-  const _OrderItem({
-    required this.name,
-    required this.subtitle,
-    required this.price,
-    this.imageUrl,
-  });
-}
-
-const _mockOrderItems = [
-  _OrderItem(
-    name: 'Kinetic Onyx Headphones',
-    subtitle: 'Carbon Black | ANC',
-    price: '\$449.00',
-  ),
-  _OrderItem(
-    name: 'Nexus Titanium Phone',
-    subtitle: '256GB | Frost Silver',
-    price: '\$1,099.00',
-  ),
-];
-
-// Payment Method Enum 
-enum PaymentMethod { creditCard, paypal, applePay }
+// Payment Method Enum
+enum PaymentMethod { creditCard, paypal, applePay, cash }
 
 class PaymentScreen extends StatefulWidget {
   static const routeName = '/payment';
@@ -43,6 +18,13 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   PaymentMethod _selectedMethod = PaymentMethod.creditCard;
+
+  // Local-only address state. The backend has no address field yet, so
+  // this isn't persisted — it resets when the screen is rebuilt/app
+  // restarts. Swap for a real API call once one exists.
+  String _shippingName = 'Julian Thorne';
+  String _shippingAddress =
+      '882 Tech Plaza, Suite 402\nSilicon Valley, CA 94025\nUnited States';
 
   final _nameController = TextEditingController(text: 'Julian Thorne');
   final _cardController = TextEditingController(text: '**** **** **** 4421');
@@ -88,7 +70,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(24, 8, 24, 40),
         children: [
-          //  Page header 
+          // Page header
           Text(
             'SECURE CHECKOUT',
             style: TextStyle(
@@ -110,18 +92,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
           const SizedBox(height: 28),
 
-          //  Shipping Destination 
+          // Shipping Destination
           _SectionHeader(
             icon: Icons.local_shipping_outlined,
             title: 'Shipping Destination',
             actionLabel: 'CHANGE',
-            onAction: () {},
+            onAction: _showChangeAddressDialog,
           ),
           const SizedBox(height: 12),
-          _ShippingCard(),
+          _ShippingCard(
+            name: _shippingName,
+            address: _shippingAddress,
+          ),
           const SizedBox(height: 28),
 
-          // Payment Method 
+          // Payment Method
           _SectionHeader(
             icon: Icons.credit_card_outlined,
             title: 'Payment Method',
@@ -132,7 +117,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             onChanged: (m) => setState(() => _selectedMethod = m),
           ),
 
-          // Credit Card Fields (shown only when credit card selected) 
+          // Credit Card Fields (shown only when credit card selected)
           AnimatedCrossFade(
             firstChild: _CreditCardForm(
               nameController: _nameController,
@@ -148,11 +133,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
           const SizedBox(height: 28),
 
-          // Order Summary 
-          _PaymentOrderSummary(items: _mockOrderItems),
+          // Order Summary
+          BlocBuilder<CartCubit, CartState>(
+            builder: (context, state) {
+              if (state is CartLoaded) {
+                return _PaymentOrderSummary(items: state.items);
+              }
+              return const _PaymentOrderSummary(items: []);
+            },
+          ),
           const SizedBox(height: 28),
 
-          // Confirm Button 
+          // Confirm Button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -178,7 +170,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
           const SizedBox(height: 14),
 
-          //  Security note 
+          // Security note
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -197,11 +189,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
           const SizedBox(height: 28),
 
-          //Trust badges
+          // Trust badges
           _TrustBadges(),
           const SizedBox(height: 32),
 
-          //  Footer 
+          // Footer
           _Footer(),
         ],
       ),
@@ -213,9 +205,72 @@ class _PaymentScreenState extends State<PaymentScreen> {
       const SnackBar(content: Text('Order confirmed!')),
     );
   }
+
+  void _showChangeAddressDialog() {
+    final nameController = TextEditingController(text: _shippingName);
+    final addressController = TextEditingController(text: _shippingAddress);
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppColors.cardColor,
+        title: Text(
+          'Change Shipping Address',
+          style: TextStyle(
+            fontFamily: 'SpaceGrotesk',
+            fontWeight: FontWeight.w700,
+            color: AppColors.text1,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              style: TextStyle(color: AppColors.text1),
+              decoration: InputDecoration(
+                labelText: 'Full name',
+                labelStyle: TextStyle(color: AppColors.text3),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: addressController,
+              maxLines: 3,
+              style: TextStyle(color: AppColors.text1),
+              decoration: InputDecoration(
+                labelText: 'Address',
+                labelStyle: TextStyle(color: AppColors.text3),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text('Cancel', style: TextStyle(color: AppColors.text3)),
+          ),
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _shippingName = nameController.text.trim().isEmpty
+                    ? _shippingName
+                    : nameController.text.trim();
+                _shippingAddress = addressController.text.trim().isEmpty
+                    ? _shippingAddress
+                    : addressController.text.trim();
+              });
+              Navigator.pop(dialogContext);
+            },
+            child: Text('Save', style: TextStyle(color: AppColors.accentBlue)),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-// Sub-widgets 
+// Sub-widgets
 class _SectionHeader extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -265,6 +320,11 @@ class _SectionHeader extends StatelessWidget {
 }
 
 class _ShippingCard extends StatelessWidget {
+  final String name;
+  final String address;
+
+  const _ShippingCard({required this.name, required this.address});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -281,7 +341,7 @@ class _ShippingCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Julian Thorne',
+                  name,
                   style: const TextStyle(
                     fontFamily: 'SpaceGrotesk',
                     fontWeight: FontWeight.w600,
@@ -291,7 +351,7 @@ class _ShippingCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '882 Tech Plaza, Suite 402\nSilicon Valley, CA 94025\nUnited States',
+                  address,
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 13,
@@ -340,9 +400,9 @@ class _PaymentMethodSelector extends StatelessWidget {
       (PaymentMethod.creditCard, Icons.credit_card_outlined, 'CREDIT CARD'),
       (PaymentMethod.paypal, Icons.account_balance_wallet_outlined, 'PAYPAL'),
       (PaymentMethod.applePay, Icons.phone_iphone, 'APPLE PAY'),
+      (PaymentMethod.cash, Icons.payments_outlined, 'CASH ON DELIVERY'),
     ];
 
-    // FIX 1: crossAxisAlignment.stretch so cards expand to full width
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: methods.map((m) {
@@ -352,7 +412,6 @@ class _PaymentMethodSelector extends StatelessWidget {
           onTap: () => onChanged(method),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            // FIX 2: explicit full width
             width: double.infinity,
             margin: const EdgeInsets.only(bottom: 10),
             padding: const EdgeInsets.symmetric(vertical: 18),
@@ -360,9 +419,7 @@ class _PaymentMethodSelector extends StatelessWidget {
               color: AppColors.cardColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isSelected
-                    ? AppColors.accentBlue
-                    : Colors.transparent,
+                color: isSelected ? AppColors.accentBlue : Colors.transparent,
                 width: 1.5,
               ),
             ),
@@ -370,7 +427,8 @@ class _PaymentMethodSelector extends StatelessWidget {
               children: [
                 Icon(icon,
                     size: 24,
-                    color: isSelected ? AppColors.accentBlue : AppColors.text3),
+                    color:
+                        isSelected ? AppColors.accentBlue : AppColors.text3),
                 const SizedBox(height: 6),
                 Text(
                   label,
@@ -379,7 +437,8 @@ class _PaymentMethodSelector extends StatelessWidget {
                     fontSize: 11,
                     letterSpacing: 1.0,
                     fontWeight: FontWeight.w600,
-                    color: isSelected ? AppColors.accentBlue : AppColors.text3,
+                    color:
+                        isSelected ? AppColors.accentBlue : AppColors.text3,
                   ),
                 ),
               ],
@@ -549,15 +608,17 @@ class _PaymentTextField extends StatelessWidget {
 }
 
 class _PaymentOrderSummary extends StatelessWidget {
-  final List<_OrderItem> items;
+  final List<CartItemModel> items;
 
   const _PaymentOrderSummary({required this.items});
 
   @override
   Widget build(BuildContext context) {
-    const subtotal = 1548.00;
-    const tax = 123.84;
-    const total = subtotal + tax;
+    final subtotal = items.fold<double>(0, (sum, item) => sum + item.subtotal);
+    // Tax isn't returned by the Cart API; showing 0 rather than inventing
+    // a percentage. Flagged for backend/teammate alignment.
+    const tax = 0.0;
+    final total = subtotal + tax;
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -579,16 +640,30 @@ class _PaymentOrderSummary extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Item list
-          ...items.map((item) => _OrderItemRow(item: item)),
+          if (items.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(
+                'Your cart is empty',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 13,
+                  color: AppColors.text3,
+                ),
+              ),
+            )
+          else
+            ...items.map((item) => _OrderItemRow(item: item)),
           const SizedBox(height: 16),
           Divider(color: AppColors.dividerColor, thickness: 1),
           const SizedBox(height: 12),
 
-          // Cost breakdown
-          _CostRow(label: 'Subtotal', value: '\$${subtotal.toStringAsFixed(2)}'),
+          _CostRow(
+              label: 'Subtotal', value: '\$${subtotal.toStringAsFixed(2)}'),
           const SizedBox(height: 8),
-          _CostRow(label: 'Shipping', value: 'Free',
+          _CostRow(
+              label: 'Shipping',
+              value: 'Free',
               valueColor: AppColors.accentBlue),
           const SizedBox(height: 8),
           _CostRow(label: 'Tax', value: '\$${tax.toStringAsFixed(2)}'),
@@ -596,7 +671,6 @@ class _PaymentOrderSummary extends StatelessWidget {
           Divider(color: AppColors.dividerColor, thickness: 1),
           const SizedBox(height: 12),
 
-          // Total
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -627,7 +701,7 @@ class _PaymentOrderSummary extends StatelessWidget {
 }
 
 class _OrderItemRow extends StatelessWidget {
-  final _OrderItem item;
+  final CartItemModel item;
   const _OrderItemRow({required this.item});
 
   @override
@@ -636,16 +710,19 @@ class _OrderItemRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 14),
       child: Row(
         children: [
-          // Image placeholder (to be swapped with image.network when api is here -menna)
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: AppColors.imagePlaceholder,
-              borderRadius: BorderRadius.circular(8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: SizedBox(
+              width: 52,
+              height: 52,
+              child: (item.coverImage != null && item.coverImage!.isNotEmpty)
+                  ? Image.network(
+                      item.coverImage!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => _placeholder(),
+                    )
+                  : _placeholder(),
             ),
-            child: Icon(Icons.image_outlined,
-                size: 20, color: AppColors.text3.withOpacity(0.4)),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -663,7 +740,7 @@ class _OrderItemRow extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  item.subtitle,
+                  'Qty: ${item.quantity}',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 12,
@@ -672,7 +749,7 @@ class _OrderItemRow extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  item.price,
+                  '\$${item.subtotal.toStringAsFixed(2)}',
                   style: const TextStyle(
                     fontFamily: 'SpaceGrotesk',
                     fontWeight: FontWeight.w600,
@@ -685,6 +762,14 @@ class _OrderItemRow extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      color: AppColors.imagePlaceholder,
+      child: Icon(Icons.image_outlined,
+          size: 20, color: AppColors.text3.withOpacity(0.4)),
     );
   }
 }
@@ -789,8 +874,7 @@ class _Footer extends StatelessWidget {
   }
 }
 
-//  Input formatters 
-
+// Input formatters
 class _CardNumberFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
