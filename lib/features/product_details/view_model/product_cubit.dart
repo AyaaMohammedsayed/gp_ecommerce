@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gp_ecommerce/features/Categories/data/models/models.dart';
+import '../../Home/data/models/response_models.dart';
+import '../../Home/data/models/product_details_model.dart';
 import 'package:gp_ecommerce/features/product_details/data/api_service.dart';
 import 'package:gp_ecommerce/features/product_details/view_model/product_states.dart';
 
@@ -16,9 +17,7 @@ class ProductsCubit extends Cubit<ProductsState> {
   ProductsResponseModel? offersResponse;
   ProductDetailsModel? productDetails;
 
-  Future<void> getProducts(
-    String accessToken,
-  ) async {
+  Future<void> getProducts(String? accessToken) async {
     emit(GetProductsLoading());
 
     try {
@@ -43,9 +42,7 @@ class ProductsCubit extends Cubit<ProductsState> {
     }
   }
 
-  Future<void> getOffers(
-    String accessToken,
-  ) async {
+  Future<void> getOffers(String? accessToken) async {
     emit(GetOffersLoading());
 
     try {
@@ -70,10 +67,8 @@ class ProductsCubit extends Cubit<ProductsState> {
     }
   }
 
-  Future<void> getProductDetails(
-    String accessToken,
-    int productId,
-  ) async {
+  Future<void> getProductDetails(String? accessToken, int productId) async {
+    productDetails = null;
     emit(
       GetProductDetailsLoading(),
     );

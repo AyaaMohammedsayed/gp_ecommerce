@@ -124,7 +124,7 @@ Developed by the Flutter Track Graduation Team under the mentorship of **DEPI**.
 | :--- | :--- | :--- |
 | **Aya Mohamed** | Flutter Developer & Team Lead | [LinkedIn](https://www.linkedin.com/in/ayamohamedsayed/) |
 | **Jana Mohamed** | Flutter Developer | [LinkedIn]() |
-| **Menna Hesham** | Flutter Developer | [LinkedIn]() |
+| **Menna Elbanna** | Flutter Developer | [LinkedIn]() |
 | **Fatma Abdelsalam** | Flutter Developer | [LinkedIn]() |
 | **Mariel Robert John** | Flutter Developer | [LinkedIn]() |
 | **Ephraim Yousef** | Backend Developer | [LinkedIn]() |

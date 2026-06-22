@@ -120,5 +120,50 @@ void main() {
 
           expect(find.text('Passwords do not match'), findsOneWidget);
         });
+
+    testWidgets('register password visibility icons toggle password fields',
+            (WidgetTester tester) async {
+          await setTestScreenSize(tester);
+
+          await tester.pumpWidget(
+            createTestWidget(const RegisterScreen()),
+          );
+
+          await tester.pumpAndSettle();
+
+          final textFields = find.byType(TextField);
+
+          expect(textFields, findsNWidgets(4));
+
+          final passwordFieldBefore =
+          tester.widget<TextField>(textFields.at(2));
+          final confirmPasswordFieldBefore =
+          tester.widget<TextField>(textFields.at(3));
+
+          expect(passwordFieldBefore.obscureText, true);
+          expect(confirmPasswordFieldBefore.obscureText, true);
+
+          final eyeIcons = find.byIcon(Icons.visibility_outlined);
+
+          expect(eyeIcons, findsNWidgets(2));
+
+          await tester.tap(eyeIcons.at(0));
+          await tester.pumpAndSettle();
+
+          final passwordFieldAfter =
+          tester.widget<TextField>(find.byType(TextField).at(2));
+
+          expect(passwordFieldAfter.obscureText, false);
+
+          await tester.tap(find.byIcon(Icons.visibility_outlined).first);
+          await tester.pumpAndSettle();
+
+          final confirmPasswordFieldAfter =
+          tester.widget<TextField>(find.byType(TextField).at(3));
+
+          expect(confirmPasswordFieldAfter.obscureText, false);
+
+          expect(find.byIcon(Icons.visibility_off_outlined), findsNWidgets(2));
+        });
   });
 }

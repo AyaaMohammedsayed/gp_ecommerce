@@ -8,10 +8,7 @@ class AuthData {
   }) async {
     final response = await DioHelper.postData(
       url: ApiConstants.login,
-      data: {
-        'email': email,
-        'password': password,
-      },
+      data: {'email': email, 'password': password},
     );
 
     return AuthResponseModel.fromJson(response.data);
@@ -24,11 +21,7 @@ class AuthData {
   }) async {
     final response = await DioHelper.postData(
       url: ApiConstants.register,
-      data: {
-        'name': name,
-        'email': email,
-        'password': password,
-      },
+      data: {'name': name, 'email': email, 'password': password},
     );
 
     return AuthResponseModel.fromJson(response.data);
@@ -63,11 +56,7 @@ class UserModel {
   final String name;
   final String email;
 
-  UserModel({
-    required this.id,
-    required this.name,
-    required this.email,
-  });
+  UserModel({required this.id, required this.name, required this.email});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(

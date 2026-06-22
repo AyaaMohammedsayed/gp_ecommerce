@@ -1,25 +1,31 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'package:gp_ecommerce/core/api_constants.dart';
-import 'package:gp_ecommerce/features/Categories/data/models/models.dart';
+import '../../../../core/constants/api_constants.dart';
+import '../../../Home/data/models/category_model.dart';
+import '../../../Home/data/models/response_models.dart';
 
 class CategoriesApiService {
   final http.Client _client;
 
   CategoriesApiService({http.Client? client})
-      : _client = client ?? http.Client();
+    : _client = client ?? http.Client();
 
-  Map<String, String> _headers(String token) {
-    return {
+  Map<String, String> _headers(String? token) {
+    final headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
     };
+
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+
+    return headers;
   }
 
-  Future<CategoriesResponseModel> getCategories(String token) async {
-    final uri = Uri.parse('${ApiConstants.baseUrl}/categories');
+  Future<CategoriesResponseModel> getCategories(String? token) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.categories}');
 
     try {
       final response = await _client
@@ -41,11 +47,12 @@ class CategoriesApiService {
   }
 
   Future<CategoryModel> getCategoryDetails(
-    String token,
+    String? token,
     int categoryId,
   ) async {
-    final uri =
-        Uri.parse('${ApiConstants.baseUrl}/categories/$categoryId');
+    final uri = Uri.parse(
+      '${ApiConstants.baseUrl}${ApiConstants.categoryDetails(categoryId)}',
+    );
 
     try {
       final response = await _client
@@ -67,11 +74,12 @@ class CategoriesApiService {
   }
 
   Future<ProductsResponseModel> getCategoryProducts(
-    String token,
+    String? token,
     int categoryId,
   ) async {
     final uri = Uri.parse(
-        '${ApiConstants.baseUrl}/categories/$categoryId/products');
+      '${ApiConstants.baseUrl}${ApiConstants.categoryProducts(categoryId)}',
+    );
 
     try {
       final response = await _client

@@ -4,11 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gp_ecommerce/core/auth_local_storage.dart';
 
 import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/core/widgets/appbar.dart';
 import 'package:gp_ecommerce/features/Categories/view/widgets/category_item.dart';
 import 'package:gp_ecommerce/features/Categories/view_model/category_cubit.dart';
 import 'package:gp_ecommerce/features/Categories/view_model/category_states.dart';
-import 'package:gp_ecommerce/features/Home/view/widgets/custom_drawer.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static String routeName = '/categories';
@@ -20,27 +18,18 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
- @override
-void initState() {
-  super.initState();
+  @override
+  void initState() {
+    super.initState();
 
-  WidgetsBinding.instance.addPostFrameCallback((_) async {
-    final token = await AuthLocalStorage.getToken();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final token = AuthLocalStorage().getToken();
 
-    if (!mounted) return;
-
-    if (token != null && token.isNotEmpty) {
+      if (!mounted) return;
       context.read<CategoriesCubit>().getCategories(token);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("No token found, please login again"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  });
-}
+    });
+  }
+
   void _showSnackBar(String message, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -54,8 +43,7 @@ void initState() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const CustomDrawer(),
-      appBar: appBar(),
+      backgroundColor: AppColors.background,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
         child: BlocConsumer<CategoriesCubit, CategoriesState>(
@@ -65,10 +53,7 @@ void initState() {
             }
 
             if (state is GetCategoriesSuccess) {
-              _showSnackBar(
-                "Categories loaded successfully",
-                Colors.green,
-              );
+              _showSnackBar("Categories loaded successfully", Colors.green);
             }
           },
           builder: (context, state) {
@@ -94,10 +79,7 @@ void initState() {
                 children: [
                   Text(
                     'Component Catalog',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: AppColors.white,
-                    ),
+                    style: TextStyle(fontSize: 14.sp, color: AppColors.white),
                   ),
                   SizedBox(height: 10.h),
                   Text(

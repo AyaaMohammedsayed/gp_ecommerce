@@ -2,25 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/token_storage.dart';
+import '../../../../core/auth_local_storage.dart';
 import '../../view_model/home_cubit.dart';
 import '../../../Cart/view/screens/cart_screen.dart';
-import '../../../Favorites/view/screens/screen.dart';
-import '../../../profile/view/screens/screen.dart';
 import '../../../Auth/view/screens/auth_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key});
+  final ValueChanged<int>? onTabSelected;
+
+  const CustomDrawer({super.key, this.onTabSelected});
+
+  void _selectTab(BuildContext context, int index) {
+    Navigator.pop(context);
+    onTabSelected?.call(index);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Check if the user is authenticated via TokenStorage.
+    // Check if the user is authenticated via AuthLocalStorage.
     // Display dynamic user information (name and email cached from login response) if authenticated.
     // Otherwise, show generic Guest placeholders.
-    final hasUser = TokenStorage().hasToken;
-    final userName = TokenStorage().getUserName() ?? 'Guest User';
+    final hasUser = AuthLocalStorage().hasToken;
+    final userName = AuthLocalStorage().getUserName() ?? 'Guest User';
     final userEmail =
-        TokenStorage().getUserEmail() ?? 'Sign in to access catalog';
+        AuthLocalStorage().getUserEmail() ?? 'Sign in to access catalog';
 
     return Drawer(
       backgroundColor: AppColors.drawerBackground,
@@ -39,19 +44,12 @@ class CustomDrawer extends StatelessWidget {
               // Profile Section
               GestureDetector(
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer first
                   if (hasUser) {
-                    // Navigate to the user's Profile Page if signed in
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ProfileScreen()),
-                    );
+                    _selectTab(context, 3);
                   } else {
+                    Navigator.pop(context);
                     // Otherwise, redirect Guest to the Login/Registration Screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const AuthScreen()),
-                    );
+                    Navigator.pushNamed(context, AuthScreen.routeName);
                   }
                 },
                 child: Container(
@@ -138,7 +136,7 @@ class CustomDrawer extends StatelessWidget {
                 'Home',
                 context,
                 onTap: () {
-                  Navigator.pop(context);
+                  _selectTab(context, 0);
                 },
               ),
               _buildDrawerItem(
@@ -158,11 +156,7 @@ class CustomDrawer extends StatelessWidget {
                 'My Favorites',
                 context,
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const FavoritesScreen()),
-                  );
+                  _selectTab(context, 2);
                 },
               ),
               _buildDrawerItem(
@@ -215,7 +209,7 @@ class CustomDrawer extends StatelessWidget {
                   Navigator.pop(context); // Close the drawer first
                   if (hasUser) {
                     // Sign out flow: Clear locally cached session, reload home view state (re-initializing it in guest mode), and notify the user
-                    TokenStorage().clearToken();
+                    AuthLocalStorage.clear();
                     context.read<HomeCubit>().loadHomeData();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

@@ -28,10 +28,7 @@ class CategoryItem extends StatelessWidget {
         Navigator.pushNamed(
           context,
           CategoryDetialsScreen.routeName,
-          arguments: {
-            'id': categoryId,
-            'name': title,
-          },
+          arguments: {'id': categoryId, 'name': title},
         );
       },
       borderRadius: BorderRadius.circular(12.r),
@@ -49,7 +46,7 @@ class CategoryItem extends StatelessWidget {
           padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.r),
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withValues(alpha: 0.4),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
