@@ -93,11 +93,12 @@ kinetic_app/
 <img width="1025" height="563" alt="image" src="https://github.com/user-attachments/assets/2fea11d7-92e4-4dbd-9007-5ef07d8eacd4" />
 
 ---
-## Documentation and DEMO
+## Documentation & DEMO
 
 -  **Graduation Project Report:** [Project Report](https://github.com/AyaaMohammedsayed/gp_ecommerce/blob/main/Book%20DEPI%20GP.pdf)
 -  **Project Presentation:** [Presentation Slides](https://canva.link/7qtc5xu6p8y6q0s)
 - **Project DEMO:** [Project DEMO]()
+-  **Install our Application  Now!:** [kinetic App]()
 ---
 ##  Installation
 
