@@ -17,18 +17,16 @@
 
 ---
 
-### ✨ Key Features
+### Key Features
 
 | Feature | Description |
 | :--- | :--- |
-| **Smart Dashboard** | A modern, minimalist hub showcasing featured products, categories, and latest electronics arrivals. |
 | **Product Discovery** | Advanced search and smart filters to locate hardware components with high precision. |
 | **Product Details** | High-fidelity pages with technical specs, component images, and "Add to Cart" functionality. |
 | **Favorites Gallery** | A personalized space to save essential parts for future electronic projects. |
 | **Shopping Cart** | A seamless interface to manage item quantities and review final order summaries. |
 | **Simulated Checkout** | A smooth, simulated payment process to demonstrate the end-to-end shopping workflow. |
 | **User Profile** | Manage account details, saved addresses, and track order status/history. |
-| **Dynamic Theme** | A sleek, eye-friendly Dark Mode aesthetic perfect for technical and engineering environments. |
 | **State Management** | Powered by BLoC architecture to ensure smooth transitions and robust performance. |
 | **Responsive Design** | A mobile-first UI perfectly optimized for all screen sizes and device orientations. |
 
@@ -37,7 +35,7 @@
 ##  Technologies Used
 - **Framework:** Flutter & Dart
 - **State Management:** Bloc (Business Logic Component)
-- **Networking:** HTTP API Integration
+- **Networking:** HTTP & Dio API Integration
 - **Local Storage:** SharedPreferences 
 - **UI/UX Design:** Figma (High-end Industrial Art style)
 
@@ -66,13 +64,17 @@ kinetic_app/
 ## App Screenshots
 
 ###  Home & Categories
-<img src="https://github.com/user-attachments/assets/b50928a2-3a29-4b75-b506-f927c86c9ed8" width="250"/>
+<img width="438" height="2473" alt="Home" src="https://github.com/user-attachments/assets/1785f21d-7b2a-4b66-bf6a-5c07f6cdf321" />
+
+
 
 ###  Product Details
-<img src="https://github.com/user-attachments/assets/bf2182f5-fc56-41d4-bfb6-69e31327d74f" width="250"/>
+<img width="392" height="1257" alt="Product Details" src="https://github.com/user-attachments/assets/16793e63-1abb-4445-9735-0f7f589d58f5" />
+
 
 ###  Cart
-<img src="https://github.com/user-attachments/assets/b3842325-f58b-40d1-809f-6c817ee779e0" width="250"/>
+<img width="418" height="1892" alt="Cart" src="https://github.com/user-attachments/assets/62534a95-90c0-4f29-976b-607b95319e4f" />
+
 
 ---
 
@@ -87,6 +89,17 @@ kinetic_app/
 
 ---
 
+##  Future Work
+<img width="1025" height="563" alt="image" src="https://github.com/user-attachments/assets/2fea11d7-92e4-4dbd-9007-5ef07d8eacd4" />
+
+---
+## Documentation & DEMO
+
+-  **Graduation Project Report:** [Project Report](https://github.com/AyaaMohammedsayed/gp_ecommerce/blob/main/Book%20DEPI%20GP.pdf)
+-  **Project Presentation:** [Presentation Slides](https://canva.link/7qtc5xu6p8y6q0s)
+- **Project DEMO:** [Project DEMO](https://drive.google.com/file/d/1NIc5nDhcgP7KirDFPF5-pvNeHYWYAT06/view?usp=sharing )
+-  **Install our Application  Now!:** [kinetic App](https://drive.google.com/file/d/1cYHpCpCkOdrcswI798Cqm99fcM6x01nY/view)
+---
 ##  Installation
 
 1. **Clone the repository:**
@@ -123,11 +136,11 @@ Developed by the Flutter Track Graduation Team under the mentorship of **DEPI**.
 | Name | Role | LinkedIn |
 | :--- | :--- | :--- |
 | **Aya Mohamed** | Flutter Developer & Team Lead | [LinkedIn](https://www.linkedin.com/in/ayamohamedsayed/) |
-| **Jana Mohamed** | Flutter Developer | [LinkedIn]() |
-| **Menna Elbanna** | Flutter Developer | [LinkedIn]() |
-| **Fatma Abdelsalam** | Flutter Developer | [LinkedIn]() |
-| **Mariel Robert John** | Flutter Developer | [LinkedIn]() |
-| **Ephraim Yousef** | Backend Developer | [LinkedIn]() |
+| **Jana Hagras** | Flutter Developer |  [LinkedIn](https://www.linkedin.com/in/janahagras/) |
+| **Menna Hesham** | Flutter Developer | [LinkedIn](https://www.linkedin.com/in/menna-elbannaa/) |
+| **Fatma Abdelsalam** | Flutter Developer | [LinkedIn](https://www.linkedin.com/in/fatemaaaah-abd-elsalaam/) |
+| **Mariel Robert John** | Flutter Developer |  [LinkedIn](https://www.linkedin.com/in/mariel-robertjohn/) |
+| **Ephraim Yousef** | Backend Developer |   [LinkedIn](https://www.linkedin.com/in/ephra1m/) |
 
 ---
 
