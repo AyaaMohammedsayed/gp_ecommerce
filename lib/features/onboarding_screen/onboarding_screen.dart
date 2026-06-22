@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
+import 'package:kinetic/core/constants/app_colors.dart';
 import '../Auth/view/screens/auth_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

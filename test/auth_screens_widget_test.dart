@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gp_ecommerce/features/Auth/view/screens/auth_screen.dart';
-import 'package:gp_ecommerce/features/Auth/view/screens/register_screen.dart';
-import 'package:gp_ecommerce/features/Auth/view_model/cubit.dart';
+import 'package:kinetic/features/Auth/view/screens/auth_screen.dart';
+import 'package:kinetic/features/Auth/view/screens/register_screen.dart';
+import 'package:kinetic/features/Auth/view_model/cubit.dart';
 
 Widget createTestWidget(Widget child) {
   return BlocProvider(

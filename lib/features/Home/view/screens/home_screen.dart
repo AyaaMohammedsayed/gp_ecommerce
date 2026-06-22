@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kinetic/features/Favorites/view_model/cubit.dart';
 import '../../view_model/home_cubit.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/auth_local_storage.dart';
@@ -14,7 +15,6 @@ import '../../../profile/view_model/cubit.dart';
 import '../../../Auth/view/screens/auth_screen.dart';
 import '../../../product_details/view/screens/product_details.dart';
 import '../../../../core/widgets/appbar.dart';
-import 'package:gp_ecommerce/features/Favorites/view_model/cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';

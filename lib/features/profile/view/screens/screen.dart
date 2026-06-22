@@ -182,8 +182,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              
+
               context.read<ProfileCubit>().logout();
+               Navigator.pushNamed(context, AuthScreen.routeName);
             },
             child: const Text(
               'Logout',

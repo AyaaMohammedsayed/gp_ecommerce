@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:gp_ecommerce/core/auth_local_storage.dart';
-import 'package:gp_ecommerce/features/Favorites/data/favorites_service.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/features/Cart/view_model/cubit.dart';
-import 'package:gp_ecommerce/features/product_details/view_model/product_cubit.dart';
-import 'package:gp_ecommerce/features/product_details/view_model/product_states.dart';
+import 'package:kinetic/core/auth_local_storage.dart';
+import 'package:kinetic/core/constants/app_colors.dart';
+import 'package:kinetic/features/Cart/view_model/cubit.dart';
+import 'package:kinetic/features/Favorites/data/favorites_service.dart' show FavoritesService;
+import 'package:kinetic/features/product_details/view_model/product_cubit.dart';
+import 'package:kinetic/features/product_details/view_model/product_states.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   static String routeName = '/product-details';

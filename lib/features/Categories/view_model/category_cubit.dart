@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gp_ecommerce/features/Categories/data/api_service/api_service.dart';
+import 'package:kinetic/features/Categories/data/api_service/api_service.dart';
+import 'package:kinetic/features/Categories/view_model/category_states.dart';
 import '../../Home/data/models/category_model.dart';
 import '../../Home/data/models/response_models.dart';
-import 'package:gp_ecommerce/features/Categories/view_model/category_states.dart';
 
 class CategoriesCubit extends Cubit<CategoriesState> {
   final CategoriesApiService _dataSource;

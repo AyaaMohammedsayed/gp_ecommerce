@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/features/Cart/data/cart_item.dart';
-import 'package:gp_ecommerce/features/Cart/view_model/cubit.dart';
+
+import 'package:kinetic/core/constants/app_colors.dart';
+import 'package:kinetic/features/Cart/data/cart_item.dart';
+import 'package:kinetic/features/Cart/view_model/cubit.dart';
 
 // Payment Method Enum
 enum PaymentMethod { creditCard, paypal, applePay, cash }

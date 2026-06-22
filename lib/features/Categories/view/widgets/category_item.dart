@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/features/Categories/view/screens/category_detials_screen.dart';
+import 'package:kinetic/core/constants/app_colors.dart';
+import 'package:kinetic/features/Categories/view/screens/category_detials_screen.dart';
 
 class CategoryItem extends StatelessWidget {
   final int categoryId;
