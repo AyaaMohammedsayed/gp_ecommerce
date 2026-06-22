@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gp_ecommerce/core/constants/app_colors.dart';
 
-class ProductCard extends StatefulWidget {
+class ProductCard extends StatelessWidget {
   final String name;
   final String price;
   final String description;
   final List<String> badges;
-  final String? imagePath; // null until Api
+  final String? imagePath;
+  final int quantity;
+  final bool isPending;
+  final VoidCallback? onIncrement;
+  final VoidCallback? onDecrement;
   final VoidCallback? onRemove;
 
   const ProductCard({
@@ -16,15 +20,12 @@ class ProductCard extends StatefulWidget {
     required this.description,
     this.badges = const [],
     this.imagePath,
+    this.quantity = 1,
+    this.isPending = false,
+    this.onIncrement,
+    this.onDecrement,
     this.onRemove,
   });
-
-  @override
-  State<ProductCard> createState() => _ProductCardState();
-}
-
-class _ProductCardState extends State<ProductCard> {
-  int quantity = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +38,10 @@ class _ProductCardState extends State<ProductCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Product Image 
-          _ProductImage(imagePath: widget.imagePath),
+          // Product Image
+          _ProductImage(imagePath: imagePath),
 
-          // Info Section 
+          // Info Section
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
             child: Column(
@@ -53,7 +54,7 @@ class _ProductCardState extends State<ProductCard> {
                   children: [
                     Expanded(
                       child: Text(
-                        widget.name,
+                        name,
                         style: const TextStyle(
                           fontFamily: 'SpaceGrotesk',
                           fontWeight: FontWeight.w600,
@@ -64,7 +65,7 @@ class _ProductCardState extends State<ProductCard> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      widget.price,
+                      price,
                       style: const TextStyle(
                         fontFamily: 'SpaceGrotesk',
                         fontWeight: FontWeight.w600,
@@ -77,25 +78,25 @@ class _ProductCardState extends State<ProductCard> {
                 const SizedBox(height: 6),
 
                 // Description
-                Text(
-                  widget.description,
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                    fontSize: 13,
-                    color: AppColors.text3,
-                    height: 1.4,
+                if (description.isNotEmpty) ...[
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                      fontSize: 13,
+                      color: AppColors.text3,
+                      height: 1.4,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
+                  const SizedBox(height: 10),
+                ],
 
                 // Badges row
-                if (widget.badges.isNotEmpty) ...[
+                if (badges.isNotEmpty) ...[
                   Wrap(
                     spacing: 8,
-                    children: widget.badges
-                        .map((b) => _Badge(label: b))
-                        .toList(),
+                    children: badges.map((b) => _Badge(label: b)).toList(),
                   ),
                   const SizedBox(height: 12),
                 ],
@@ -105,14 +106,13 @@ class _ProductCardState extends State<ProductCard> {
                   children: [
                     _QuantityControl(
                       quantity: quantity,
-                      onDecrement: () {
-                        if (quantity > 1) setState(() => quantity--);
-                      },
-                      onIncrement: () => setState(() => quantity++),
+                      isPending: isPending,
+                      onDecrement: onDecrement,
+                      onIncrement: onIncrement,
                     ),
                     const Spacer(),
                     GestureDetector(
-                      onTap: widget.onRemove,
+                      onTap: onRemove,
                       child: Row(
                         children: [
                           Icon(Icons.delete_outline,
@@ -140,7 +140,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 }
 
-//Sub-widgets
+// Sub-widgets
 
 class _ProductImage extends StatelessWidget {
   final String? imagePath;
@@ -150,7 +150,7 @@ class _ProductImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 4 / 3,
-      child: imagePath != null
+      child: (imagePath != null && imagePath!.isNotEmpty)
           ? Image.network(
               imagePath!,
               fit: BoxFit.cover,
@@ -199,13 +199,15 @@ class _Badge extends StatelessWidget {
 
 class _QuantityControl extends StatelessWidget {
   final int quantity;
-  final VoidCallback onDecrement;
-  final VoidCallback onIncrement;
+  final bool isPending;
+  final VoidCallback? onDecrement;
+  final VoidCallback? onIncrement;
 
   const _QuantityControl({
     required this.quantity,
-    required this.onDecrement,
-    required this.onIncrement,
+    this.isPending = false,
+    this.onDecrement,
+    this.onIncrement,
   });
 
   @override
@@ -217,20 +219,29 @@ class _QuantityControl extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _QtyButton(icon: Icons.remove, onTap: onDecrement),
+          _QtyButton(icon: Icons.remove, onTap: isPending ? null : onDecrement),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(
-              quantity.toString().padLeft(2, '0'),
-              style: const TextStyle(
-                fontFamily: 'SpaceGrotesk',
-                fontWeight: FontWeight.w600,
-                fontSize: 15,
-                color: AppColors.text1,
-              ),
-            ),
+            child: isPending
+                ? SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.text1,
+                    ),
+                  )
+                : Text(
+                    quantity.toString().padLeft(2, '0'),
+                    style: const TextStyle(
+                      fontFamily: 'SpaceGrotesk',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                      color: AppColors.text1,
+                    ),
+                  ),
           ),
-          _QtyButton(icon: Icons.add, onTap: onIncrement),
+          _QtyButton(icon: Icons.add, onTap: isPending ? null : onIncrement),
         ],
       ),
     );
@@ -239,7 +250,7 @@ class _QuantityControl extends StatelessWidget {
 
 class _QtyButton extends StatelessWidget {
   final IconData icon;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   const _QtyButton({required this.icon, required this.onTap});
 
   @override
