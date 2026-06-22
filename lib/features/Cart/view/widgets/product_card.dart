@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
+import 'package:kinetic/core/constants/app_colors.dart';
 
 class ProductCard extends StatelessWidget {
   final String name;

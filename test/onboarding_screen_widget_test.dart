@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kinetic/features/Auth/view/screens/auth_screen.dart';
+import 'package:kinetic/features/onboarding_screen/onboarding_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:gp_ecommerce/features/onboarding_screen/onboarding_screen.dart';
-import 'package:gp_ecommerce/features/Auth/view/screens/auth_screen.dart';
 
 class FakeAuthPage extends StatelessWidget {
   const FakeAuthPage({super.key});

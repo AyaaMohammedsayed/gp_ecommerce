@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kinetic/features/product_details/data/api_service.dart';
+import 'package:kinetic/features/product_details/view_model/product_states.dart';
 import '../../Home/data/models/response_models.dart';
 import '../../Home/data/models/product_details_model.dart';
-import 'package:gp_ecommerce/features/product_details/data/api_service.dart';
-import 'package:gp_ecommerce/features/product_details/view_model/product_states.dart';
 
 
 class ProductsCubit extends Cubit<ProductsState> {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/features/Cart/view_model/cubit.dart';
-import 'package:gp_ecommerce/features/Favorites/view_model/cubit.dart';
-import 'package:gp_ecommerce/features/Home/data/models/product_model.dart';
+import 'package:kinetic/core/constants/app_colors.dart';
+import 'package:kinetic/features/Cart/view_model/cubit.dart';
+import 'package:kinetic/features/Favorites/view_model/cubit.dart';
+import 'package:kinetic/features/Home/data/models/product_model.dart';
 
 class FavoritesScreen extends StatefulWidget {
   static String routeName = '/favorites';

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/features/Cart/view_model/cubit.dart';
-import 'package:gp_ecommerce/features/cart/view/screens/cart_screen.dart';
+import 'package:kinetic/core/constants/app_colors.dart';
+import 'package:kinetic/features/Cart/view/screens/cart_screen.dart';
+import 'package:kinetic/features/Cart/view_model/cubit.dart';
 
 PreferredSizeWidget appBar() {
   return AppBar(

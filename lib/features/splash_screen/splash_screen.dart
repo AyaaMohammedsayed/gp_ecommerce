@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
+import 'package:kinetic/core/constants/app_colors.dart';
+import 'package:kinetic/features/Auth/view/screens/auth_screen.dart';
+import 'package:kinetic/features/Home/view/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../onboarding_screen/onboarding_screen.dart';
-import 'package:gp_ecommerce/features/Auth/view/screens/auth_screen.dart';
-import 'package:gp_ecommerce/features/Home/view/screens/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   static String routeName = '/splash';

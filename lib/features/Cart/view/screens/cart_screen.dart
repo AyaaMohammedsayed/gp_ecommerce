@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/features/Cart/view/widgets/kinetic_bottom_nav.dart';
-import 'package:gp_ecommerce/features/Cart/view/widgets/order_summary_card.dart';
-import 'package:gp_ecommerce/features/Cart/view/widgets/product_card.dart';
-import 'package:gp_ecommerce/features/Cart/view/widgets/promo_code_section.dart';
-import 'package:gp_ecommerce/features/Cart/view_model/cubit.dart';
-import 'package:gp_ecommerce/features/Home/view/screens/home_screen.dart';
-import 'package:gp_ecommerce/features/payment/view/screens/payment_screen.dart';
+import 'package:kinetic/core/constants/app_colors.dart';
+import 'package:kinetic/features/Cart/view/widgets/kinetic_bottom_nav.dart';
+import 'package:kinetic/features/Cart/view/widgets/order_summary_card.dart';
+import 'package:kinetic/features/Cart/view/widgets/product_card.dart';
+import 'package:kinetic/features/Cart/view/widgets/promo_code_section.dart';
+import 'package:kinetic/features/Cart/view_model/cubit.dart' show CartCubit, CartState, CartError, CartLoading, CartInitial, CartLoaded;
+import 'package:kinetic/features/Home/view/screens/home_screen.dart';
+import 'package:kinetic/features/Home/view/widgets/custom_drawer.dart';
+import 'package:kinetic/features/payment/view/screens/payment_screen.dart';
 
 class CartScreen extends StatefulWidget {
   static const routeName = '/cart';
@@ -44,6 +45,15 @@ final int _navIndex = -1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: CustomDrawer(
+        onTabSelected: (index) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => HomeScreen(initialIndex: index)),
+            (route) => false,
+          );
+        },
+      ),
       backgroundColor: AppColors.darkbackground,
       appBar: AppBar(
         centerTitle: false,

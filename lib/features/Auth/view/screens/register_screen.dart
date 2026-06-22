@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/features/Auth/view_model/cubit.dart';
+import 'package:kinetic/core/constants/app_colors.dart';
+import 'package:kinetic/features/Auth/view_model/cubit.dart';
 import '../../view_model/states.dart';
 import '../widgets/auth_field.dart';
 import '../widgets/label_text.dart';
