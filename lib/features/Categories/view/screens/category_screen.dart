@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gp_ecommerce/core/auth_local_storage.dart';
 
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
-import 'package:gp_ecommerce/features/Categories/view/widgets/category_item.dart';
-import 'package:gp_ecommerce/features/Categories/view_model/category_cubit.dart';
-import 'package:gp_ecommerce/features/Categories/view_model/category_states.dart';
+
+import 'package:kinetic/core/auth_local_storage.dart';
+import 'package:kinetic/core/constants/app_colors.dart';
+import 'package:kinetic/features/Categories/view/widgets/category_item.dart';
+import 'package:kinetic/features/Categories/view_model/category_cubit.dart';
+import 'package:kinetic/features/Categories/view_model/category_states.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static String routeName = '/categories';

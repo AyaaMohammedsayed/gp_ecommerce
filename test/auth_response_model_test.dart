@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gp_ecommerce/features/Auth/data/data.dart';
+import 'package:kinetic/features/Auth/data/data.dart';
 
 void main() {
   group('AuthResponseModel', () {

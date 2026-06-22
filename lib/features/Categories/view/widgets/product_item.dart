@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gp_ecommerce/core/constants/app_colors.dart';
+import 'package:kinetic/core/constants/app_colors.dart';
 import '../../../Home/data/models/product_model.dart';
 
 class ProductItem extends StatelessWidget {
