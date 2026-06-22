@@ -97,7 +97,7 @@ kinetic_app/
 
 -  **Graduation Project Report:** [Project Report](https://github.com/AyaaMohammedsayed/gp_ecommerce/blob/main/Book%20DEPI%20GP.pdf)
 -  **Project Presentation:** [Presentation Slides](https://canva.link/7qtc5xu6p8y6q0s)
-- **Project DEMO:** [Project DEMO]()
+- **Project DEMO:** [Project DEMO](https://drive.google.com/file/d/1NIc5nDhcgP7KirDFPF5-pvNeHYWYAT06/view?usp=sharing )
 -  **Install our Application  Now!:** [kinetic App]()
 ---
 ##  Installation
